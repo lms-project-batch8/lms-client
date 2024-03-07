@@ -1,0 +1,16 @@
+.navbar {
+    width: auto;
+    height: 60px;
+    padding: 10px 20px;
+    align-items: center;
+    overflow: hidden;
+    
+  }
+
+  .navbar .icons .user img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
