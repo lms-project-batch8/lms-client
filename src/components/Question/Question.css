@@ -1,0 +1,28 @@
+.question {
+    width: 95%;
+    border-radius: 5px;
+    margin: 10px;
+    background-color: #BFD8AF;
+    padding: 20px;
+    text-align: start;
+}
+
+.question__options {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    word-wrap: break-word;
+}
+
+.question__title {
+    padding-left: 20px;
+    font-size: 23px;
+    display: flex; 
+    font-weight: bold;
+    justify-content: start;
+    gap: 10px;
+}

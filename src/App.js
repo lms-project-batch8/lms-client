@@ -1,20 +1,17 @@
-import Navbar from "./components/Navbar";
-import { BrowserRouter } from "react-router-dom";
-import Menu from "./components/Menu";
-function App() {
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Dashboard from "./pages/dashboard/Dashboard";
+import QuizPage from "./pages/QuizPage/QuizPage"
+import QuizLanding from "./components/QuizLanding";
+
+const App = () => {
   return (
-    <div className="App">
       <BrowserRouter>
-        <div className="main  bg-dark-purple">
-          <Navbar />
-        </div>
-        <div className="flex">
-          <div className={`w-[170px] h-screen bg-dark-purple`}>
-            <Menu/>
-          </div>  
-        </div>
+      <Routes>
+        <Route element={<Dashboard />} path="/"/>
+        <Route element={<QuizLanding />} path="/quiz/:id" />
+        <Route element={<QuizPage />} path="/quiz/:id/start" />
+      </Routes>
       </BrowserRouter>
-    </div>
   );
 }
 
