@@ -1,0 +1,24 @@
+.option {
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+    word-wrap: break-word;
+    background-color: #99BC85;
+    border-radius: 5px;
+    align-items: end;
+    padding: 5px;
+}
+
+.option_number {
+    font-weight: 500;
+    font-size: 24px;
+}
+
+.option__text {
+    font-weight: 600;
+    font-size: 16px;
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}

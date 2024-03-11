@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import Logo from "../assets/logo.png"
-
+ import Logo from "../../assets/logo.png"
 import "./Navbar.css";
+
 const Navbar = () => {
   return (
     <div className="navbar text-white flex justify-normal">

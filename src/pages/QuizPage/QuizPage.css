@@ -1,0 +1,15 @@
+.quiz__page {
+    width: 1024px;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background-color: #E1F0DA;
+}
+
+.quiz__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+}
