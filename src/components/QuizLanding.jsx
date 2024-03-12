@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 const QuizLanding = () => {
-    const location = useLocation();
-    const { quizId } = location.state;
+    const { id } = useParams();
 
     const navigate = useNavigate();
 
@@ -11,9 +10,9 @@ const QuizLanding = () => {
 
     return (
         <main>
-            <div>QuizLanding {quizId}</div>
+            <div>QuizLanding {id}</div>
             <div>
-                <Link to={`/quiz/${quizId}/start`}>Start Quiz</Link>
+                <Link to={`/quiz/${id}/start`}>Start Quiz</Link>
             </div>
         </main>
     );

@@ -6,18 +6,20 @@ import CourseLanding from "./components/CourseLanding"
 import AddTrainer from "./components/Forms/AddTrainer";
 import AddTrainee from "./components/Forms/AddTrainee";
 import LoginPage from "./pages/Login/LoginPage";
+import RequireAuth from "./pages/Login/RequireAuth";
+
 const App = () => {
   return (
       <BrowserRouter>
-      <Routes>
-        <Route element={<Dashboard />} path="/"/>
-        <Route element={<QuizLanding />} path="/quiz/:id" />
-        <Route element={<CourseLanding/>} path="/course/:id"/>
-        <Route element={<AddTrainer/>} path="/addtrainer"/>
-        <Route element={<AddTrainee/>} path="/addtrainee"/>
-        <Route element={<QuizPage />} path="/quiz/:id/start" />
-        <Route element={<LoginPage />} path="/login" />
-      </Routes>
+        <Routes>
+          <Route element={<RequireAuth><Dashboard /></RequireAuth>} path="/" />
+          <Route element={<RequireAuth><QuizLanding /></RequireAuth>} path="/quiz/:id" />
+          <Route element={<RequireAuth><CourseLanding/></RequireAuth>} path="/course/:id"/>
+          <Route element={<RequireAuth><AddTrainer/></RequireAuth>} path="/addtrainer"/>
+          <Route element={<RequireAuth><AddTrainee/></RequireAuth>} path="/addtrainee"/>
+          <Route element={<RequireAuth><QuizPage /></RequireAuth>} path="/quiz/:id/start" />
+          <Route element={<LoginPage />} path="/login" />
+        </Routes>
       </BrowserRouter>
   );
 }

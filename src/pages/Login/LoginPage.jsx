@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
+import { useSelector, useDispatch } from "react-redux";
+import { login, logout } from "../../auth/authSlice";
 
 const LoginPage = (props) => {
     const [email, setEmail] = useState("");
@@ -8,6 +10,9 @@ const LoginPage = (props) => {
 
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
+
+    const dispatch = useDispatch();
+    const { isLoggedIn, user } = useSelector((state) => state.auth);
 
     const navigate = useNavigate();
 
@@ -35,7 +40,25 @@ const LoginPage = (props) => {
             return;
         }
 
-        navigate("/");
+        handleLogin();
+    };
+
+    const handleLogin = () => {
+        const userData = { name: "John Doe", email: "john@example.com" };
+        dispatch(login(userData));
+
+        if (user) {
+            const redirectUrl =
+                sessionStorage.getItem("redirectAfterLogin") || "/";
+            sessionStorage.removeItem("redirectAfterLogin");
+
+            // Redirect
+            navigate(redirectUrl, { replace: true });
+        }
+    };
+
+    const handleLogout = () => {
+        dispatch(logout());
     };
 
     return (
