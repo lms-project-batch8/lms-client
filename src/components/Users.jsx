@@ -10,6 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
+
 const columns = [
   { id: "user_id", label: "user_id", minWidth: 130 },
   { id: "user_name", label: "user_name", minWidth: 200 },

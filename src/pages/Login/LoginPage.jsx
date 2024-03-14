@@ -46,12 +46,10 @@ const LoginPage = (props) => {
     };
 
     const handleLogin = async () => {
-        // Immediately show the loader when login starts
         handleOpen();
 
         let res = {};
         try {
-            // Your login logic...
             res = await axios.get(
                 `https://lms-server-tktv.onrender.com/search?email=${email}`
             );
@@ -59,43 +57,39 @@ const LoginPage = (props) => {
 
             if (user) {
                 if (user.user_password === password) {
-                    // Simulate login process (e.g., setting user session, redirecting)
                     setTimeout(() => {
-                        // Close the loader after 3 seconds
                         handleClose();
-                        // Dispatch login action
+
                         dispatch(login(user));
-                        // Redirect user
+
                         const redirectUrl =
                             sessionStorage.getItem("redirectAfterLogin") || "/";
                         sessionStorage.removeItem("redirectAfterLogin");
+
                         navigate(redirectUrl, { replace: true });
-                    }, 3000); // Keep the loader visible for 3 seconds
+                    }, 3000);
                 } else {
                     setTimeout(() => {
-                        // If password is incorrect, still close the loader after 3 seconds
                         handleClose();
                         setPasswordError(
                             "Incorrect Password! Please Try again"
                         );
-                    }, 3000);
+                    }, 500);
                 }
             } else {
                 setTimeout(() => {
-                    // If user not found, close the loader after 3 seconds
                     handleClose();
                     setEmailError(
                         "Email not found! Please Enter Correct Email"
                     );
-                }, 3000);
+                }, 500);
             }
         } catch (err) {
             console.log(err);
             setTimeout(() => {
-                // In case of an error, close the loader after 3 seconds and show an error
                 handleClose();
                 setEmailError("Email not found! Please Enter Correct Email");
-            }, 3000);
+            }, 500);
         }
     };
 
