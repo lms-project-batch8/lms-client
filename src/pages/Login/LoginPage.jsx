@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "../../auth/authSlice";
+import axios from "axios";
 
 const LoginPage = (props) => {
     const [email, setEmail] = useState("");
@@ -43,17 +44,32 @@ const LoginPage = (props) => {
         handleLogin();
     };
 
-    const handleLogin = () => {
-        const userData = { name: "John Doe", email: "john@example.com" };
-        dispatch(login(userData));
+    const handleLogin = async () => {
+        let res = {};
+        try {
+            res = await axios.get(
+                `https://lms-server-tktv.onrender.com/search?email=${email}`
+            );
+        } catch (err) {
+            console.log(err);
+            setEmailError("Email not found! Please Enter Correct Email");
+            return;
+        }
+
+        const user = res.data[0];
 
         if (user) {
             const redirectUrl =
                 sessionStorage.getItem("redirectAfterLogin") || "/";
             sessionStorage.removeItem("redirectAfterLogin");
 
-            // Redirect
-            navigate(redirectUrl, { replace: true });
+            if (user.user_password === password) {
+                dispatch(login(user));
+                navigate(redirectUrl, { replace: true });
+            } else {
+                setPasswordError("Incorrect Password! Please Try again");
+                return;
+            }
         }
     };
 

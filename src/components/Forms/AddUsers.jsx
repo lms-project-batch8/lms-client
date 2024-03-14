@@ -10,16 +10,14 @@ const AddUsers = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log({ userId, name, email, password, role });
-        const res = await axios.post("http://localhost:3001/user", {
+
+        const res = await axios.post("https://lms-server-tktv.onrender.com/users", {
             user_id: userId,
             user_name: name,
             user_email: email,
             user_password: password,
             user_role: role,
         });
-
-        console.log(res.data);
     };
 
     return (

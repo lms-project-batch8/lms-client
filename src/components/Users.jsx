@@ -8,6 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import EditIcon from "@mui/icons-material/Edit";
 
 const columns = [
     { id: "user_id", label: "user_id", minWidth: 180 },
@@ -24,7 +25,9 @@ export default function Users() {
 
     useEffect(() => {
         const getUsers = async () => {
-            const res = await axios.get("http://localhost:3001/user");
+            const res = await axios.get(
+                "https://lms-server-tktv.onrender.com/users"
+            );
             setUsers(res.data);
         };
 
@@ -36,7 +39,7 @@ export default function Users() {
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
+        setRowsPerPage(event.target.value);
         setPage(0);
     };
 
