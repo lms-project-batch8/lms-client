@@ -3,25 +3,20 @@ import Menu from "../../components/Menu/Menu";
 import React, { useState } from "react";
 import Quizes from "../../components/Quizes";
 import Courses from "../../components/Courses";
-import AddTrainer from "../../components/Forms/AddTrainer";
-import AddTrainee from "../../components/Forms/AddTrainee";
-import DeleteTrainer from "../../components/Forms/DeleteTrainer";
-import DeleteTrainee from "../../components/Forms/DeleteTrainee";
+import Users from "../../components/Users";
+import AddUsers from "../../components/Forms/AddUsers";
 
 const Dashboard = () => {
     const [coursesOpen, setCoursesOpen] = useState(false);
     const [quizesOpen, setQuizesOpen] = useState(true);
-    const [addTrainer, setAddTrainer] = useState(false);
-    const [addTrainee, setAddTrainee] = useState(false);
-    const [deleteTrainer, setDeleteTrainer] = useState(false);
-    const [deleteTrainee, setDeleteTrainee] = useState(false);
+    const [usersOpen, setUsersOpen] = useState(false);
+    const [openAddUsers, setOpenAddUsers] = useState(false);
+
     const functionsList = [
         { func: handleQuizes, state: setQuizesOpen, value: true },
         { func: handleCourses, state: setCoursesOpen, value: true },
-        { func: handleAddTrainer, state: setAddTrainer, value: true },
-        { func: handleAddTrainee, state: setAddTrainee, value: true },
-        { func: handleDeleteTrainer, state: setDeleteTrainer, value: true },
-        { func: handleDeleteTrainee, state: setDeleteTrainee, value: true },
+        { func: handleUsers, state: setUsersOpen, value: true },
+        { func: handleAddUsers, state: setOpenAddUsers, value: true },
     ];
 
     function handleQuizes() {
@@ -32,28 +27,20 @@ const Dashboard = () => {
         handleState(functionsList[1]);
     }
 
-    function handleAddTrainer() {
-        handleState(functionsList[2]);
-    }
-
-    function handleAddTrainee() {
-        handleState(functionsList[3]);
-    }
-
-    function handleDeleteTrainer() {
-        handleState(functionsList[4]);
-    }
-
-    function handleDeleteTrainee() {
-        handleState(functionsList[5]);
-    }
-
     function handleState(item) {
         const newState = {};
         for (const state of functionsList) {
             state.state(state === item ? state.value : false);
         }
         Object.assign(newState, { ...newState });
+    }
+
+    function handleUsers() {
+        handleState(functionsList[2]);
+    }
+
+    function handleAddUsers() {
+        handleState(functionsList[3]);
     }
 
     return (
@@ -68,19 +55,15 @@ const Dashboard = () => {
                     <Menu
                         openQuizes={handleQuizes}
                         openCourses={handleCourses}
-                        addTrainer={handleAddTrainer}
-                        addTrainee={handleAddTrainee}
-                        deleteTrainer={handleDeleteTrainer}
-                        deleteTrainee={handleDeleteTrainee}
+                        openUsers={handleUsers}
+                        openAddUsers={handleAddUsers}
                     />
                 </div>
                 <div className="pl-[170px] pt-[60px] overflow-auto h-screen">
                     {quizesOpen && <Quizes />}
                     {coursesOpen && <Courses />}
-                    {addTrainer && <AddTrainer />}
-                    {addTrainee && <AddTrainee />}
-                    {deleteTrainer && <DeleteTrainer />}
-                    {deleteTrainee && <DeleteTrainee />}
+                    {usersOpen && <Users />}
+                    {openAddUsers && <AddUsers />}
                 </div>
             </div>
         </main>
