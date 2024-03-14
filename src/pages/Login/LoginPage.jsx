@@ -4,6 +4,7 @@ import "./LoginPage.css";
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "../../auth/authSlice";
 import axios from "axios";
+import Loader from "../../components/Loader";
 
 const LoginPage = (props) => {
     const [email, setEmail] = useState("");
@@ -45,45 +46,75 @@ const LoginPage = (props) => {
     };
 
     const handleLogin = async () => {
+        // Immediately show the loader when login starts
+        handleOpen();
+
         let res = {};
         try {
+            // Your login logic...
             res = await axios.get(
                 `https://lms-server-tktv.onrender.com/search?email=${email}`
             );
+            const user = res.data[0];
+
+            if (user) {
+                if (user.user_password === password) {
+                    // Simulate login process (e.g., setting user session, redirecting)
+                    setTimeout(() => {
+                        // Close the loader after 3 seconds
+                        handleClose();
+                        // Dispatch login action
+                        dispatch(login(user));
+                        // Redirect user
+                        const redirectUrl =
+                            sessionStorage.getItem("redirectAfterLogin") || "/";
+                        sessionStorage.removeItem("redirectAfterLogin");
+                        navigate(redirectUrl, { replace: true });
+                    }, 3000); // Keep the loader visible for 3 seconds
+                } else {
+                    setTimeout(() => {
+                        // If password is incorrect, still close the loader after 3 seconds
+                        handleClose();
+                        setPasswordError(
+                            "Incorrect Password! Please Try again"
+                        );
+                    }, 3000);
+                }
+            } else {
+                setTimeout(() => {
+                    // If user not found, close the loader after 3 seconds
+                    handleClose();
+                    setEmailError(
+                        "Email not found! Please Enter Correct Email"
+                    );
+                }, 3000);
+            }
         } catch (err) {
             console.log(err);
-            setEmailError("Email not found! Please Enter Correct Email");
-            return;
-        }
-
-        const user = res.data[0];
-
-        if (user) {
-            const redirectUrl =
-                sessionStorage.getItem("redirectAfterLogin") || "/";
-            sessionStorage.removeItem("redirectAfterLogin");
-
-            if (user.user_password === password) {
-                dispatch(login(user));
-                navigate(redirectUrl, { replace: true });
-            } else {
-                setPasswordError("Incorrect Password! Please Try again");
-                return;
-            }
+            setTimeout(() => {
+                // In case of an error, close the loader after 3 seconds and show an error
+                handleClose();
+                setEmailError("Email not found! Please Enter Correct Email");
+            }, 3000);
         }
     };
 
-    const handleLogout = () => {
-        dispatch(logout());
+    const [openLoader, setOpenLoader] = useState(false);
+    const handleClose = () => {
+        setOpenLoader(false);
+    };
+    const handleOpen = () => {
+        setOpenLoader(true);
     };
 
     return (
-        <div className={"mainContainer"}>
-            <div className={"titleContainer"}>
+        <div className="mainContainer">
+            {openLoader && <Loader open={openLoader} />}
+            <div className="titleContainer">
                 <div>Login</div>
             </div>
             <br />
-            <div className={"inputContainer"}>
+            <div className="inputContainer">
                 <input
                     value={email}
                     placeholder="Enter your email here"
@@ -93,19 +124,19 @@ const LoginPage = (props) => {
                 <label className="errorLabel">{emailError}</label>
             </div>
             <br />
-            <div className={"inputContainer"}>
+            <div className="inputContainer">
                 <input
                     value={password}
                     placeholder="Enter your password here"
                     onChange={(ev) => setPassword(ev.target.value)}
-                    className={"inputBox"}
+                    className="inputBox"
                 />
                 <label className="errorLabel">{passwordError}</label>
             </div>
             <br />
-            <div className={"inputContainer"}>
+            <div className="inputContainer">
                 <input
-                    className={"inputButton"}
+                    className="inputButton"
                     type="button"
                     onClick={onButtonClick}
                     value={"Log in"}
