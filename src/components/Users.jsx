@@ -10,6 +10,8 @@ import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
+import EditUser from "./Forms/EditUser";
+import { Link } from "react-router-dom";
 
 const columns = [
   { id: "user_id", label: "user_id", minWidth: 130 },
@@ -62,13 +64,14 @@ export default function Users() {
             <TableRow>
               {columns.map((column) => (
                 <>
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
+                
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
+                  >
+                    {column.label}
+                  </TableCell>
                 </>
               ))}
             </TableRow>
@@ -86,10 +89,21 @@ export default function Users() {
                       </TableCell>
                     );
                   })}
-                  <TableCell align="center">
+                  <TableCell align="center">                  
                     <div className="flex justify-center items-center gap-4">
-                      <EditRoundedIcon color="action" onClick={()=>{}} sx={{cursor:"pointer"}}/>
-                      <DeleteForeverRoundedIcon color="warning" onClick={()=>{}} sx={{cursor:"pointer"}}/>
+                    {console.log(user)}
+                    
+                    <Link to={{ pathname: `/users/edit/${user.user_id}`, state: { user} }}>
+                        <EditRoundedIcon
+                          color="action"
+                          sx={{ cursor: "pointer" }}
+                        />
+                      </Link>
+                      <DeleteForeverRoundedIcon
+                        color="warning"
+                        onClick={() => {}}
+                        sx={{ cursor: "pointer" }}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>
