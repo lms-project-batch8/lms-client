@@ -1,22 +1,43 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 
 const EditUser = () => {
-  const location = useLocation();
-  const user = location.state?.user;
-  console.log(user.user_id);
+  const param = useParams();
+
+  const user_id = param.user_id
+  console.log(param.user_id);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
+  async function fetchData() {
+    try {
+      const res = await axios.get(`https://lms-server-tktv.onrender.com/users/${user_id}`);
+      const user = res.data[0]; // Assuming the response is an array with a single user object
+      console.log(res.data[0]);
+      setName(user.user_name);
+      setEmail(user.user_email);
+      setPassword(user.user_password);
+      setRole(user.user_role);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  }
+  useEffect(() => {
+    fetchData();
+    return;
+  }, []);
+
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+  
 
-    const res = await axios.put("https://lms-server-tktv.onrender.com/users", {
+    const res = await axios.put(`https://lms-server-tktv.onrender.com/users/${user_id}`, {
       user_id: userId,
       user_name: name,
       user_email: email,

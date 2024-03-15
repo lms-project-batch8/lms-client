@@ -22,9 +22,17 @@ const columns = [
 ];
 
 export default function Users() {
+<<<<<<< HEAD
     const [users, setUsers] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+=======
+  const [users, setUsers] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [editUser, setEditUser] = useState(null);
+
+>>>>>>> 33441dcb486157fb0714662559c0205e48bdbe8b
 
     useEffect(() => {
         const getUsers = async () => {
@@ -46,6 +54,7 @@ export default function Users() {
         setPage(0);
     };
 
+<<<<<<< HEAD
     return (
         <Paper
             sx={{
@@ -134,4 +143,97 @@ export default function Users() {
             />
         </Paper>
     );
+=======
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleEditUser = (user) => {
+    setEditUser(user);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(event.target.value);
+    setPage(0);
+  };
+  const handleCloseEditUser = () => {
+    setEditUser(null); // Clear the user to be edited
+  };
+  return (
+    <Paper
+      sx={{
+        width: "100%",
+        height: "100vh", // Ensure Paper takes full viewport height
+        display: "flex",
+        flexDirection: "column", // Stack children vertically
+        justifyContent: "space-between", // Spread out the content
+        overflow: "hidden",
+        padding: "20px",
+        marginBottom: "20px",
+      }}
+    >
+      <TableContainer sx={{ flexGrow: 1, overflow: "auto" }}>
+        {/* Make TableContainer flexible and scrollable */}
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead sx={{ background: "blueviolet" }}>
+            <TableRow>
+              {columns.map((column) => (
+                <>
+                
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
+                  >
+                    {column.label}
+                  </TableCell>
+                </>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {users
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((user, index) => (
+                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                  {columns.map((column) => {
+                    const value = user[column.id];
+                    return (
+                      <TableCell key={column.id} align={column.align}>
+                        {value}
+                      </TableCell>
+                    );
+                  })}
+                  <TableCell align="center">                  
+                    <div className="flex justify-center items-center gap-4">               
+                        <EditRoundedIcon
+                          color="action"
+                          sx={{ cursor: "pointer" }}
+                          onClick={()=>handleEditUser(user)}
+                        />
+                      <DeleteForeverRoundedIcon
+                        color="warning"
+                        onClick={() => {}}
+                        sx={{ cursor: "pointer" }}
+                      />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 100]}
+        component="div"
+        count={users.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+            {editUser && <EditUser user={editUser} onClose={handleCloseEditUser} />}
+
+    </Paper>
+  );
+>>>>>>> 33441dcb486157fb0714662559c0205e48bdbe8b
 }
