@@ -53,7 +53,7 @@ const EditUser = () => {
   return (
     <div className='w-[1024px] flex flex-col justify-center items-center gap-10 overflow-hidden h-full'>
       <h2 className='text-4xl pt-10 text-center font-extrabold dark:text-grey-600'>
-        Add Trainer
+        Add Trainers
       </h2>
       <div className='h-screen flex flex-row justify-center'>
         <form className=' mx-auto w-[400px]' onSubmit={handleSubmit}>
@@ -63,6 +63,7 @@ const EditUser = () => {
               name='userid'
               id='userid'
               value={userId}
+              contentEditable={false}
               onChange={(e) => setUserId(e.target.value)}
               className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
               required
