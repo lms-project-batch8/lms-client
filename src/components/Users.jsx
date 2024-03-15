@@ -25,6 +25,8 @@ export default function Users() {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [editUser, setEditUser] = useState(null);
+
 
   useEffect(() => {
     const getUsers = async () => {
@@ -38,12 +40,17 @@ export default function Users() {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
+  const handleEditUser = (user) => {
+    setEditUser(user);
+  };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(event.target.value);
     setPage(0);
   };
-
+  const handleCloseEditUser = () => {
+    setEditUser(null); // Clear the user to be edited
+  };
   return (
     <Paper
       sx={{
@@ -90,15 +97,12 @@ export default function Users() {
                     );
                   })}
                   <TableCell align="center">                  
-                    <div className="flex justify-center items-center gap-4">
-                    {console.log(user)}
-                    
-                    <Link to={{ pathname: `/users/edit/${user.user_id}`, state: { user} }}>
+                    <div className="flex justify-center items-center gap-4">               
                         <EditRoundedIcon
                           color="action"
                           sx={{ cursor: "pointer" }}
+                          onClick={()=>handleEditUser(user)}
                         />
-                      </Link>
                       <DeleteForeverRoundedIcon
                         color="warning"
                         onClick={() => {}}
@@ -120,6 +124,8 @@ export default function Users() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+            {editUser && <EditUser user={editUser} onClose={handleCloseEditUser} />}
+
     </Paper>
   );
 }
