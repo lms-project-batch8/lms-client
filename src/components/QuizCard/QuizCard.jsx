@@ -6,7 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import QuizImage from "../../assets/quiz_image.jpg"; // Ensure the correct spelling of your import
+import QuizImage from "../../assets/quiz.jpg"; // Ensure the correct spelling of your import
 
 const QuizCard = ({ quizId }) => {
   return (
