@@ -67,7 +67,7 @@ export default function Users() {
         display: "flex",
         flexDirection: "column", // Stack children vertically
         justifyContent: "space-between", // Spread out the content
-        overflow: "hidden",
+        overflow: "auto",
         padding: "20px",
         marginBottom: "20px",
       }}
