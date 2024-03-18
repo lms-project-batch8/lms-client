@@ -55,7 +55,7 @@ const Dashboard = () => {
   }
 
   return (
-    <main className='overflow-hidden'>
+    <main className='overflow-hidden z-10'>
       <div className='bg-dark-purple fixed top-0 left-0 right-0 z-10'>
         <Navbar />
       </div>
