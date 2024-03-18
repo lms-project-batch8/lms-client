@@ -1,10 +1,12 @@
+import { Dashboard } from "@mui/icons-material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 const EditUser = () => {
+    
+
     const { id } = useParams();
 
     console.log(id);
@@ -58,8 +60,10 @@ const EditUser = () => {
   };
   
 
-    return (
-        <div className="w-[1024px] flex flex-col justify-center items-center gap-10 overflow-hidden h-full">
+    return ( 
+        <>
+        <Dashboard/>
+        <div className="w-[1024px] flex flex-col justify-center items-center gap-10 overflow-hidden h-full z-0">
             <h2 className="text-4xl pt-10 text-center font-extrabold dark:text-grey-600">
                 Edit User
             </h2>
@@ -165,7 +169,8 @@ const EditUser = () => {
                 </form>
             </div>
         </div>
-    );
+        </>
+        );
 };
 
 export default EditUser;
