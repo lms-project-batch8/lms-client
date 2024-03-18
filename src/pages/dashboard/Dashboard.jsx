@@ -54,26 +54,23 @@ const Dashboard = () => {
     }
   }
 
-  console.log(user.user_role); // Should be 'admin' for admin users
-  console.log(isSuperUser); // Should be true for admin users
-
   return (
     <main className='overflow-hidden z-10'>
       <div className='bg-dark-purple fixed top-0 left-0 right-0 z-10'>
         <Navbar />
       </div>
       <div className='flex'>
-        <div className={`w-[170px] h-screen bg-dark-purple fixed`}>
+        <div className='w-[18%] min-w-[170px] h-screen bg-dark-purple fixed'>
           <Menu
             openQuizes={handleQuizes}
             openCourses={handleCourses}
             openUsers={handleUsers}
             openAddUsers={handleAddUsers}
-            showUsers={isSuperUser} // This should be true for an admin user
-            showAddUsers={isSuperUser} // This should be true for an admin user
+            showUsers={isSuperUser}
+            showAddUsers={isSuperUser}
           />
         </div>
-        <div className='pl-[170px] pt-[60px] overflow-auto h-screen'>
+        <div className='pl-[20%] min-pl-[170px] pt-[60px] overflow-auto h-screen'>
           {quizesOpen && <Quizes />}
           {coursesOpen && <Courses />}
           {isSuperUser && usersOpen && <Users />}
