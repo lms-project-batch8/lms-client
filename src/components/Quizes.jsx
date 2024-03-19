@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import QuizCard from "./QuizCard/QuizCard";
 import { Link } from "react-router-dom";
+<<<<<<< HEAD
 import axios from "axios";
 
+=======
+import { Button } from "@mui/material";
+>>>>>>> 94fcfd850dc9b76e7ebf980c67341adaafa1803c
 const Quizes = () => {
   const [quizzes, setQuizzes] = useState([]);
 
@@ -19,7 +23,7 @@ const Quizes = () => {
   return (
     <main className='flex flex-col'>
       <Link to={`/quiz/new`}>
-        <div className='p-5'>Create A Quiz</div>
+        <div className='p-5'><Button variant="contained">Create A Quiz</Button></div>
       </Link>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
         {quizzes.map((quiz, index) => (
