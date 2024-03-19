@@ -1,17 +1,22 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 const QuizLanding = () => {
-  const quizTitle = "The Ultimate JavaScript Quiz";
-  const quizDescription =
-    "Test your JavaScript knowledge with this quiz. Covering topics from basics to advanced concepts, see where you stand in the world of JavaScript!";
-  const quizDuration = "30 minutes";
-
+  const [quiz, setQuiz] = useState([]);
   const { id } = useParams();
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    const getQuiz = async () => {
+      const res = await axios.get(
+        `https://lms-server-tktv.onrender.com/quiz/${id}`,
+      );
+      console.log(res.data);
+      setQuiz(res.data);
+    };
 
-  const [quizStart, setQuizStart] = useState(false);
+    getQuiz();
+  }, []);
 
   return (
     <div
@@ -19,9 +24,15 @@ const QuizLanding = () => {
       style={{ backgroundImage: `url('your-background-image-url-here')` }}
     >
       <div className='bg-white bg-opacity-75 rounded-lg p-8 shadow-lg'>
-        <h1 className='text-3xl font-bold mb-4'>{quizTitle}</h1>
-        <p className='mb-4'>{quizDescription}</p>
-        <p className='font-semibold mb-6'>Duration: {quizDuration}</p>
+        <h1 className='text-3xl font-bold mb-4'>{quiz.title}</h1>
+        <p className='mb-4'>
+          This a Quiz of{" "}
+          <span>
+            {quiz.duration_minutes} minutes. Do not Change the tab while
+            attempting and do not engage in any malpractices. All the Best.{" "}
+          </span>
+        </p>
+        <p className='font-semibold mb-6'>Duration: {quiz.duration_minutes}</p>
         <Link to={`/quiz/${id}/start`}>
           <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
             Start Quiz

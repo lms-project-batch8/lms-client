@@ -3,6 +3,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
+import axios from "axios";
 
 const QuizForm = () => {
   const [quizName, setQuizName] = useState(""); // State for quiz name
@@ -54,9 +55,16 @@ const QuizForm = () => {
     setQuestions(questions.filter((_, index) => index !== qIndex));
   };
 
-  const submitQuiz = () => {
-    console.log(JSON.stringify({ quizName, quizDuration, questions }));
-    // Here you would handle submitting the quiz data, e.g., to an API
+  const submitQuiz = async () => {
+    try {
+      await axios.post(`https://lms-server-tktv.onrender.com/quiz`, {
+        quizName,
+        quizDuration,
+        questions,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -7,8 +7,22 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import QuizImage from "../../assets/quiz.jpg"; // Ensure the correct spelling of your import
+import axios from "axios";
 
 const QuizCard = ({ quizId }) => {
+  const [quiz, setQuiz] = useState({});
+
+  useEffect(() => {
+    const getQuiz = async () => {
+      const res = await axios.get(
+        `https://lms-server-tktv.onrender.com/quiz/${quizId}`,
+      );
+      console.log(res.data);
+      setQuiz(res.data);
+    };
+
+    getQuiz();
+  }, []);
   return (
     <main className='cursor-pointer p-4'>
       <Card
@@ -19,28 +33,18 @@ const QuizCard = ({ quizId }) => {
           <CardMedia
             component='img'
             alt='quiz image'
-            height='140' // Adjusted for better proportion
+            height='140'
             image={QuizImage}
-            className='w-full object-cover' // Tailwind classes for full width and cover object fit
+            className='w-full object-cover'
           />
           <CardContent className='bg-gray-100'>
-            {" "}
-            {/* Background color applied here */}
             <Typography
               gutterBottom
               variant='h5'
               component='div'
               className='text-lg font-semibold'
             >
-              Lizard
-            </Typography>
-            <Typography
-              variant='body2'
-              color='text.secondary'
-              className='text-gray-600'
-            >
-              Lizards are a widespread group of squamate reptiles, with over
-              6,000 species, ranging across all continents except Antarctica
+              {quiz.title}
             </Typography>
           </CardContent>
         </Link>
