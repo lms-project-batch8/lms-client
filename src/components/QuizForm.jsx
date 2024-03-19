@@ -3,6 +3,9 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const QuizForm = () => {
   const [quizName, setQuizName] = useState(""); // State for quiz name
@@ -53,9 +56,11 @@ const QuizForm = () => {
   const deleteQuestion = (qIndex) => {
     setQuestions(questions.filter((_, index) => index !== qIndex));
   };
-
-  const submitQuiz = () => {
+  const notify = () => toast.success("Quiz added!");
+  const submitQuiz = () => {    
+    notify();
     console.log(JSON.stringify({ quizName, quizDuration, questions }));
+    
     // Here you would handle submitting the quiz data, e.g., to an API
   };
 
