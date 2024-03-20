@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
 import QuizCard from "./QuizCard/QuizCard";
 import { Link } from "react-router-dom";
-<<<<<<< HEAD
 import axios from "axios";
-
-=======
 import { Button } from "@mui/material";
->>>>>>> 94fcfd850dc9b76e7ebf980c67341adaafa1803c
+
 const Quizes = () => {
   const [quizzes, setQuizzes] = useState([]);
 
   useEffect(() => {
     const getQuizzes = async () => {
       const res = await axios.get(`https://lms-server-tktv.onrender.com/quiz`);
-      console.log(res);
-      setQuizzes(res.data);
+      console.log(res.data);
+
+      const sortedQuizzes = res.data.sort((a, b) => {
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+
+      setQuizzes(sortedQuizzes);
     };
 
     getQuizzes();
@@ -23,11 +25,13 @@ const Quizes = () => {
   return (
     <main className='flex flex-col'>
       <Link to={`/quiz/new`}>
-        <div className='p-5'><Button variant="contained">Create A Quiz</Button></div>
+        <div className='p-5'>
+          <Button variant='contained'>Create A Quiz</Button>
+        </div>
       </Link>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
         {quizzes.map((quiz, index) => (
-          <QuizCard quizId={quiz.quiz_id} />
+          <QuizCard key={quiz.quiz_id} quizId={quiz.quiz_id} />
         ))}
       </div>
     </main>

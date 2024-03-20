@@ -1,21 +1,25 @@
 import Option from "../Option/Option";
 import "./Question.css";
 
-const question = ({ question, options }) => {
+const Question = ({ question, options }) => {
+  // Component names must be capitalized
   return (
     <main className='question'>
       <div className='question__title'>
-        <span>{question.question_id}.</span>
-        <span>{question.question_text}</span>
+        <span>{question}</span>
       </div>
 
-      {/* <section className='question__options'>
+      <section className='question__options'>
         {options.map((option, index) => (
-          <Option option={option} index={index} />
+          <Option
+            key={option.option_id}
+            option={option.option_text}
+            index={index}
+          /> // Pass option_text and use option_id for key
         ))}
-      </section> */}
+      </section>
     </main>
   );
 };
 
-export default question;
+export default Question;

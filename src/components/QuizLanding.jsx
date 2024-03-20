@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const QuizLanding = () => {
-  const [quiz, setQuiz] = useState([]);
+  const [quiz, setQuiz] = useState({});
   const { id } = useParams();
 
   useEffect(() => {
@@ -16,7 +16,7 @@ const QuizLanding = () => {
     };
 
     getQuiz();
-  }, []);
+  }, [id]);
 
   return (
     <div
@@ -29,7 +29,8 @@ const QuizLanding = () => {
           This a Quiz of{" "}
           <span>
             {quiz.duration_minutes} minutes. Do not Change the tab while
-            attempting and do not engage in any malpractices. All the Best.{" "}
+            attempting the quiz and do not engage in any malpractices. All the
+            Best.
           </span>
         </p>
         <p className='font-semibold mb-6'>Duration: {quiz.duration_minutes}</p>

@@ -1,34 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Question from "../../components/Question/Question";
-import "./Quiz.css";
-import Timer from "../Timer/Timer";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import Question from "../../components/Question/Question";
+import Timer from "../Timer/Timer";
+import "./Quiz.css";
 
 const Quiz = () => {
-  const [quiz, setQuiz] = useState({
-    quiz_id: 10,
-    title: "JS Quiz",
-    description: null,
-    duration_minutes: 180,
-    created_at: "2024-03-18T09:20:48.000Z",
-    questions: [
-      {
-        question_id: 3,
-        question_text: "what is your name?",
-        question_type: null,
-        created_at: "2024-03-18T09:20:48.000Z",
-        options: [
-          {
-            option_id: 2,
-            option_text: "a",
-            is_correct: 1,
-            created_at: "2024-03-18T09:20:48.000Z",
-          },
-        ]
-      },
-    ],
-  });
+  const [quiz, setQuiz] = useState({});
   const { id } = useParams();
 
   useEffect(() => {
@@ -36,32 +14,35 @@ const Quiz = () => {
       const res = await axios.get(
         `https://lms-server-tktv.onrender.com/quiz/${id}`,
       );
-      console.log(res.data);
+      console.log("Quiz Data:", res.data); // Debug: Log the quiz data
       setQuiz(res.data);
-      console.log(quiz.duration_minutes);
     };
 
     getQuiz();
-  }, []);
+  }, [id]);
 
-  const duration = parseInt(quiz.duration_minutes) * 60;
+  // Ensure quiz.duration_minutes is a number and has a default value (e.g., 0)
+  const duration = parseInt(quiz.duration_minutes || 0) * 60;
 
   return (
     <main className='quiz'>
       <section className='quiz__header'>
         <div className='quiz__header_title'>
-          <span>JavaScript Quiz</span>
+          <span>{quiz.title || "Quiz"}</span>
         </div>
         <div className='quiz__timer'>
           <Timer seconds={duration} />
         </div>
       </section>
       <section className='quiz__questions'>
-        {quiz.questions.map((question) => (
-          <Question question={quiz.question_text} options={quiz.options} />
-        ))}
+        {quiz.questions?.map((question, index) => (
+          <Question
+            key={question.question_id}
+            question={question.question_text}
+            options={question.options}
+          />
+        )) || null}
       </section>
-
       <section className='quiz__submit hover:bg-[#D4E7C5]'>
         <span>Submit</span>
       </section>
