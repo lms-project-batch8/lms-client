@@ -1,11 +1,11 @@
-import React from "react";
-import Coursecard from "./Coursecard/Coursecard";
+import React from 'react'
+import Course from './Course/Course'
 const Courses = () => {
   return (
-    <>
-      courses
-    </>
-  );
-};
+    <div>
+        <Course/>
+    </div>
+  )
+}
 
-export default Courses;
+export default Courses

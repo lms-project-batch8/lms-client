@@ -72,7 +72,7 @@ const Dashboard = () => {
         </div>
         <div className='pl-[20%] min-pl-[170px] pt-[60px] overflow-auto h-screen'>
           {quizesOpen && <Quizes />}
-          {coursesOpen && <Courses />}
+          {coursesOpen && <Courses/>}
           {isSuperUser && usersOpen && <Users />}
           {isSuperUser && openAddUsers && <AddUsers />}
         </div>

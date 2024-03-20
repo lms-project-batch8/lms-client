@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Logo from "../../assets/logo.png";
 import "./Navbar.css";
 import { logout } from "../../auth/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
     const dispatch = useDispatch();
@@ -20,9 +20,11 @@ const Navbar = () => {
     const userEmail = user ? user.user_email : "";
 
     return (
-        <div className="navbar text-white flex justify-normal">
+        <div className="navbar bg-dark-purple text-white flex justify-normal">
             <div className="logo flex-1 font-bold">
+                <Link to="/">
                 <img src={Logo} className="w-[50px] ml-6 p-1" alt="Logo"></img>
+                </Link>
             </div>
             <div className="icons flex max-w-screen-xl px-4 py-3 mx-auto">
                 <div className="flex items-center rounded-md">

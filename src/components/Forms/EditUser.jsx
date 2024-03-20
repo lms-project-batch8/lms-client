@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Navbar from "../Navbar/Navbar";
 
 const EditUser = () => {
   const { id } = useParams();
@@ -52,9 +53,12 @@ const EditUser = () => {
     };
 
     return (
+        <>
+        <Navbar/>
         <div className="w-[1024px] flex flex-col justify-center items-center gap-10 overflow-hidden h-full">
             <h2 className="text-4xl pt-10 text-center font-extrabold dark:text-grey-600">
-                Add Trainer
+                Edit User : 
+                <span className="text-red-600 pl-3">{id}</span>
             </h2>
             <div className="h-screen flex flex-row justify-center">
                 <form className=" mx-auto w-[400px]" onSubmit={handleSubmit}>
@@ -63,7 +67,7 @@ const EditUser = () => {
                             type="number"
                             name="userid"
                             id="userid"
-                            value={userId}
+                            value={id}
                             onChange={(e) => setUserId(e.target.value)}
                             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                             required
@@ -156,6 +160,7 @@ const EditUser = () => {
                 </form>
             </div>
         </div>
+        </>
     );
 };
 
