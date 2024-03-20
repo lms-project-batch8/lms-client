@@ -1,13 +1,11 @@
-import React from "react";
-import Coursecard from "./Coursecard/Coursecard";
-import CourseLanding from "./CourseLanding";
-import CourseDashBoard from "./Course/CourseDashBoard";
+import React from 'react'
+import Course from './Course/Course'
 const Courses = () => {
   return (
-    <>
-      <CourseDashBoard/>
-    </>
-  );
-};
+    <div>
+        <Course/>
+    </div>
+  )
+}
 
-export default Courses;
+export default Courses

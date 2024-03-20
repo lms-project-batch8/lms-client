@@ -1,7 +1,11 @@
 import React from 'react'
 import ModuleList from './ModuleList';
+import { useParams } from 'react-router-dom';
+import Navbar from '../Navbar/Navbar';
+import Dashboard from '../../pages/dashboard/Dashboard';
  
 function CourseDashBoard() {
+    const { id } = useParams();
     const modules = [
         {
           id: 1,
@@ -24,7 +28,8 @@ function CourseDashBoard() {
      
     return (
         <>
-            <div className='flex h-screen'>
+        <Navbar/>
+            <div className='flex h-screen '>
                 <section className='w-1/2 p-8 bg-gray-200'>
                     <h1 className="text-2xl font-bold mb-4">Course Title</h1>
                     <p className="text-lg mb-8">Course Description Lorem ipsum dolor sit amet,
@@ -32,7 +37,7 @@ function CourseDashBoard() {
                 </section>
                 <section className='w-full h-full p-8 bg-gray-100 overflow-y-auto'>
                     <div className=''>
-                        <h1 className="text-2xl font-bold mb-4">Course Content</h1>
+                        <h1 className="text-2xl font-bold mb-4">Course {id} Contents</h1>
                         <div>
                             <ModuleList modules = {modules}/>
                         </div>

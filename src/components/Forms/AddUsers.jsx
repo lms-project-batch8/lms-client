@@ -36,7 +36,7 @@ const AddUsers = () => {
   return (
     <div className="w-[1024px] flex flex-col justify-center items-center gap-10 overflow-hidden h-full">
       <h2 className="text-4xl pt-10 text-center font-extrabold dark:text-grey-600">
-        Edit User
+        Add New User
       </h2>
       <div className="h-screen flex flex-row justify-center">
         <form className=" mx-auto w-[400px]" onSubmit={handleSubmit}>
