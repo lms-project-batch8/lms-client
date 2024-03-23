@@ -3,12 +3,18 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
+import axios from "axios";
 
 const QuizForm = () => {
-  const [quizName, setQuizName] = useState(""); // State for quiz name
-  const [quizDuration, setQuizDuration] = useState(""); // State for quiz duration
+  const [quizName, setQuizName] = useState("");
+  const [quizDuration, setQuizDuration] = useState("");
   const [questions, setQuestions] = useState([
-    { questionText: "", options: [], correctAnswer: "" },
+    {
+      questionText: "",
+      options: [{ id: 1, text: "" }],
+      correctAnswer: null,
+      marks: 0,
+    },
   ]);
 
   const handleQuizNameChange = (event) => {
@@ -16,7 +22,7 @@ const QuizForm = () => {
   };
 
   const handleQuizDurationChange = (event) => {
-    setQuizDuration(event.target.value); // Update quiz duration state
+    setQuizDuration(event.target.value);
   };
 
   const handleQuestionChange = (index, event) => {
@@ -27,26 +33,37 @@ const QuizForm = () => {
 
   const handleOptionChange = (qIndex, oIndex, event) => {
     const newQuestions = [...questions];
-    newQuestions[qIndex].options[oIndex] = event.target.value;
+    newQuestions[qIndex].options[oIndex].text = event.target.value;
     setQuestions(newQuestions);
   };
 
-  const handleCorrectAnswerChange = (qIndex, event) => {
+  const handleCorrectAnswerChange = (qIndex, optionText) => {
     const newQuestions = [...questions];
-    newQuestions[qIndex].correctAnswer = event.target.value;
+    newQuestions[qIndex].correctAnswer = optionText;
+    setQuestions(newQuestions);
+  };
+
+  const handleMarksChange = (qIndex, event) => {
+    const newQuestions = [...questions];
+    newQuestions[qIndex].marks = event.target.value;
     setQuestions(newQuestions);
   };
 
   const addQuestion = () => {
     setQuestions([
       ...questions,
-      { questionText: "", options: [], correctAnswer: "" },
+      { questionText: "", options: [], correctAnswer: "", marks: "" },
     ]);
   };
 
   const addOption = (qIndex) => {
     const newQuestions = [...questions];
-    newQuestions[qIndex].options.push("");
+    const newOptionId =
+      newQuestions[qIndex].options.reduce(
+        (maxId, option) => Math.max(option.id, maxId),
+        0,
+      ) + 1;
+    newQuestions[qIndex].options.push({ id: newOptionId, text: "" });
     setQuestions(newQuestions);
   };
 
@@ -54,9 +71,13 @@ const QuizForm = () => {
     setQuestions(questions.filter((_, index) => index !== qIndex));
   };
 
-  const submitQuiz = () => {
+  const submitQuiz = async () => {
     console.log(JSON.stringify({ quizName, quizDuration, questions }));
-    // Here you would handle submitting the quiz data, e.g., to an API
+    await axios.post("http://localhost:20190/quiz", {
+      quizName,
+      quizDuration,
+      questions,
+    });
   };
 
   return (
@@ -91,25 +112,39 @@ const QuizForm = () => {
               onChange={(e) => handleQuestionChange(qIndex, e)}
               className='input input-bordered w-full mb-2 p-2 bg-slate-100'
             />
+            <input
+              type='number'
+              placeholder={`Marks for Question ${qIndex + 1}`}
+              value={parseInt(q.marks)}
+              onChange={(e) => handleMarksChange(qIndex, e)}
+              className='input input-bordered w-full mb-2 p-2 bg-slate-100'
+            />
             {q.options.map((option, oIndex) => (
               <input
                 key={oIndex}
                 type='text'
                 placeholder={`Option ${oIndex + 1}`}
-                value={option}
+                value={option.text}
                 onChange={(e) => handleOptionChange(qIndex, oIndex, e)}
                 className='input input-bordered w-full mb-1 p-1 bg-slate-100'
               />
             ))}
+
             <div className='flex flex-col justify-center gap-1 bg-slate-100 p-2 rounded-md'>
-              <span className='font-semibold'>Correct Answer:</span>
-              <input
-                type='text'
-                placeholder='Correct Answer'
-                value={q.correctAnswer}
-                onChange={(e) => handleCorrectAnswerChange(qIndex, e)}
+              <select
+                value={q.correctAnswer || ""}
+                onChange={(e) =>
+                  handleCorrectAnswerChange(qIndex, e.target.value)
+                }
                 className='input input-bordered bg-slate-50 w-full mb-2 p-1'
-              />
+              >
+                <option value=''>Select Correct Answer</option>
+                {q.options.map((option, index) => (
+                  <option key={index} value={option.text}>
+                    {`Option ${index + 1}: ${option.text}`}
+                  </option>
+                ))}
+              </select>
             </div>
             <IconButton
               onClick={() => addOption(qIndex)}
