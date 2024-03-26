@@ -16,7 +16,7 @@ const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
 
   const isSuperUser = user.user_role === "admin";
-
+  
   const functionsList = [
     { func: handleQuizes, state: setQuizesOpen, value: true },
     { func: handleCourses, state: setCoursesOpen, value: true },
