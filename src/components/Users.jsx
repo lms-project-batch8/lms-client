@@ -15,11 +15,10 @@ import Alert from "@mui/material/Alert";
 import { Button } from "@mui/material";
 
 const columns = [
-  { id: "user_id", label: "User Id", minWidth: 130 },
-  { id: "user_name", label: "User Name", minWidth: 200 },
-  { id: "user_email", label: "User Email", minWidth: 250 },
-  { id: "user_password", label: "User Password", minWidth: 200 },
-  { id: "user_role", label: "User Role", minWidth: 180 },
+  { id: "user_id", label: "User Id", minWidth: 150 },
+  { id: "user_name", label: "User Name", minWidth: 220 },
+  { id: "user_email", label: "User Email", minWidth: 270 },
+  { id: "user_role", label: "User Role", minWidth: 200 },
 ];
 
 export default function Users() {
@@ -69,6 +68,7 @@ export default function Users() {
         overflow: "hidden",
         padding: "20px",
         marginBottom: "20px",
+        align:"center"
       }}
     >
       <TableContainer sx={{ flexGrow: 1, overflow: "auto" }}>

@@ -22,9 +22,11 @@ const Navbar = () => {
     return (
         <div className="navbar bg-dark-purple text-white flex justify-normal">
             <div className="logo flex-1 font-bold">
+                <span>
                 <Link to="/">
                 <img src={Logo} className="w-[50px] ml-6 p-1" alt="Logo"></img>
                 </Link>
+                </span>
             </div>
             <div className="icons flex max-w-screen-xl px-4 py-3 mx-auto">
                 <div className="flex items-center rounded-md">
