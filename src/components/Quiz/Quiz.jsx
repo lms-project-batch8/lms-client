@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Question from "../../components/Question/Question";
 import Timer from "../Timer/Timer";
 import "./Quiz.css";
+import QuizResultsDialog from "../../pages/QuizResultsDialog";
 
 const Quiz = () => {
   const [quiz, setQuiz] = useState({});
+
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [userAnswers, setUserAnswers] = useState({});
+
+  const [marksObtained, setMarksObtained] = useState(0);
+  const [marks, setMarks] = useState(0);
 
   const handleAnswerChange = (questionId, selectedOptionId) => {
     setUserAnswers((prevAnswers) => ({
@@ -23,7 +29,7 @@ const Quiz = () => {
   const checkAnswersAndCalculateMarks = (quiz, userAnswers) => {
     let totalMarks = 0;
 
-    const res = quiz.questions.forEach((ques) => {
+    quiz.questions.forEach((ques) => {
       const userSelectedOption = userAnswers[ques.question_id]
         ? ques.options.find(
             (option) =>
@@ -31,16 +37,16 @@ const Quiz = () => {
           )
         : null;
 
-      let marks = ques.question_marks;
+      let quesMarks = ques.question_marks;
 
-      console.log(marks);
+      setMarks((prev) => prev + quesMarks);
 
       if (userSelectedOption.option_text === ques.correct_ans) {
-        totalMarks += parseInt(marks);
+        totalMarks = totalMarks + quesMarks;
       }
     });
 
-    console.log(totalMarks);
+    setMarksObtained(totalMarks);
   };
 
   useEffect(() => {
@@ -56,6 +62,12 @@ const Quiz = () => {
   }, [id]);
 
   const duration = parseInt(quiz.duration_minutes || 0) * 60;
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
   return (
     <main className='quiz'>
@@ -81,11 +93,17 @@ const Quiz = () => {
       <section
         className='quiz__submit hover:bg-[#D4E7C5]'
         onClick={() => {
-          const res = checkAnswersAndCalculateMarks(quiz, userAnswers);
+          checkAnswersAndCalculateMarks(quiz, userAnswers);
+          setOpen(true);
         }}
       >
         <span>Submit</span>
       </section>
+      <QuizResultsDialog
+        open={open}
+        marks={marks}
+        marksObtained={marksObtained}
+      />
     </main>
   );
 };
