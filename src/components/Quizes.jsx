@@ -4,10 +4,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { Button } from "@mui/material";
 
-=======
-
-import { Button } from "@mui/material";
->>>>>>> eb8ca83df56de8de41942ec31d2021a7e6d7bb31
 const Quizes = () => {
   const [quizzes, setQuizzes] = useState([]);
  

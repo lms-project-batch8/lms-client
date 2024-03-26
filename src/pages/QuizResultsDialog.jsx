@@ -3,12 +3,16 @@ import PropTypes from "prop-types";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import { DialogContent, DialogContentText } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function SimpleDialog(props) {
   const { onClose, open, marksObtained, marks } = props;
 
+  const navigate = useNavigate();
+
   const handleClose = (event, reason) => {
     onClose();
+    navigate("/login");
   };
 
   return (
