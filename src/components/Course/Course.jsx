@@ -2,13 +2,12 @@ import React ,{useEffect} from "react";
 import { Route, Routes, BrowserRouter, Link} from "react-router-dom";
 import VideoCard from "./VideoCard";
 import { Button } from "@mui/material";
+import { useSelector } from "react-redux";
 
 function Course() {
-  // const history = useHistory();
+  const { user } = useSelector((state) => state.auth);
 
-  // const handleGoBack = () => {
-  //   history.goBack(); // This will take the user back to the previous page in the history stack
-  // };
+  const isTrainer = user.user_role.toLowerCase() === "trainer";
   const courses = [
     {
       id: 1,
@@ -34,11 +33,11 @@ function Course() {
   ];
   return (
     <main className="flex flex-col">
-      <Link to={`/course/new`}>
+      {isTrainer&& <Link to={`/course/new`}>
         <div className="p-5">
           <Button variant="contained">Create a Course</Button>
         </div>
-      </Link>
+      </Link>}
       <div className="flex p-4 gap-5">
         {courses.map((course) => (
           <div key={course.id}>
