@@ -10,7 +10,6 @@ const Quizes = () => {
   const { user } = useSelector((state) => state.auth);
 
   const isTrainer = user.user_role.toLowerCase() === "trainer";
-  
 
   useEffect(() => {
     const getQuizzes = async () => {
@@ -29,11 +28,14 @@ const Quizes = () => {
 
   return (
     <main className="flex flex-col">
-      {isTrainer &&<Link to={`/quiz/new`}>
-        <div className="p-5">
-          <Button variant="contained">Create A Quiz</Button>
-        </div>
-      </Link>}
+      <div className="p-5">
+        {isTrainer && (
+          <Link to={`/quiz/new`}>
+            <Button variant="contained">Create A Quiz</Button>
+          </Link>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {quizzes.map((quiz) => (
           <QuizCard quizId={quiz.quiz_id} />

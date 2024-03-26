@@ -1,5 +1,5 @@
-import React ,{useEffect} from "react";
-import { Route, Routes, BrowserRouter, Link} from "react-router-dom";
+import React, { useEffect } from "react";
+import { Route, Routes, BrowserRouter, Link } from "react-router-dom";
 import VideoCard from "./VideoCard";
 import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
@@ -33,11 +33,14 @@ function Course() {
   ];
   return (
     <main className="flex flex-col">
-      {isTrainer&& <Link to={`/course/new`}>
-        <div className="p-5">
-          <Button variant="contained">Create a Course</Button>
-        </div>
-      </Link>}
+      <div className="p-5">
+        {isTrainer && (
+          <Link to={`/course/new`}>
+            <Button variant="contained">Create a Course</Button>
+          </Link>
+        )}
+      </div>
+
       <div className="flex p-4 gap-5">
         {courses.map((course) => (
           <div key={course.id}>
