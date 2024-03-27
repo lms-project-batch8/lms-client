@@ -11,6 +11,7 @@ const Navbar = () => {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
+        sessionStorage.removeItem("user");
     dispatch(logout());
     navigate("/login", { replace: true });
   };
