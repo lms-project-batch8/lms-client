@@ -22,3 +22,8 @@
     padding-top: 5px;
     padding-bottom: 5px;
 }
+
+.option--selected {
+    background-color: #AED581;
+  }
+  

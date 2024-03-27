@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Question from "../../components/Question/Question";
 import Timer from "../Timer/Timer";
 import "./Quiz.css";
 import QuizResultsDialog from "../../pages/QuizResultsDialog";
+import { useSelector } from "react-redux";
 
 const Quiz = () => {
   const [quiz, setQuiz] = useState({});
-
+  const { user } = useSelector((state) => state.auth);
   const { id } = useParams();
-  const navigate = useNavigate();
-
   const [userAnswers, setUserAnswers] = useState({});
-
   const [marksObtained, setMarksObtained] = useState(0);
   const [marks, setMarks] = useState(0);
+  const [open, setOpen] = React.useState(false);
 
   const handleAnswerChange = (questionId, selectedOptionId) => {
     setUserAnswers((prevAnswers) => ({
@@ -24,10 +23,9 @@ const Quiz = () => {
     }));
   };
 
-  console.log(userAnswers);
-
   const checkAnswersAndCalculateMarks = (quiz, userAnswers) => {
     let totalMarks = 0;
+    let totalPossibleMarks = 0;
 
     quiz.questions.forEach((ques) => {
       const userSelectedOption = userAnswers[ques.question_id]
@@ -38,15 +36,18 @@ const Quiz = () => {
         : null;
 
       let quesMarks = ques.question_marks;
+      totalPossibleMarks += quesMarks;
 
-      setMarks((prev) => prev + quesMarks);
-
-      if (userSelectedOption.option_text === ques.correct_ans) {
-        totalMarks = totalMarks + quesMarks;
+      if (
+        userSelectedOption &&
+        userSelectedOption.option_text === ques.correct_ans
+      ) {
+        totalMarks += quesMarks;
       }
     });
 
     setMarksObtained(totalMarks);
+    setMarks(totalPossibleMarks);
   };
 
   useEffect(() => {
@@ -61,13 +62,26 @@ const Quiz = () => {
     getQuiz();
   }, [id]);
 
-  const duration = parseInt(quiz.duration_minutes || 0) * 60;
-
-  const [open, setOpen] = React.useState(false);
+  useEffect(() => {
+    if (open) {
+      // Call handleMarksSubmit only after marksObtained is updated and dialog is opened
+      handleMarksSubmit(marksObtained);
+    }
+  }, [marksObtained, open]); // Add open to dependency array to ensure this runs after dialog is opened
 
   const handleClickOpen = () => {
     setOpen(true);
   };
+
+  const handleMarksSubmit = async (marksObtained) => {
+    await axios.post(`https://lms-server-tktv.onrender.com/marks`, {
+      quiz_id: quiz.quiz_id,
+      user_id: user.user_id,
+      marks: marksObtained,
+    });
+  };
+
+  const duration = parseInt(quiz.duration_minutes || 0) * 60;
 
   return (
     <main className='quiz'>

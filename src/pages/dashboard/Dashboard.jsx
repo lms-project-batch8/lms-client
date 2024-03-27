@@ -16,7 +16,9 @@ const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
 
   const isSuperUser = user.user_role === "admin";
-  
+
+  const isTrainer = user.user_role === "trainer";
+
   const functionsList = [
     { func: handleQuizes, state: setQuizesOpen, value: true },
     { func: handleCourses, state: setCoursesOpen, value: true },
@@ -68,11 +70,12 @@ const Dashboard = () => {
             openAddUsers={handleAddUsers}
             showUsers={isSuperUser}
             showAddUsers={isSuperUser}
+            isTrainer={isTrainer}
           />
         </div>
         <div className='pl-[20%] min-pl-[170px] pt-[60px] overflow-auto h-screen'>
           {quizesOpen && <Quizes />}
-          {coursesOpen && <Courses/>}
+          {coursesOpen && <Courses />}
           {isSuperUser && usersOpen && <Users />}
           {isSuperUser && openAddUsers && <AddUsers />}
         </div>
