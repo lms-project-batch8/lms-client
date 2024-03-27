@@ -15,10 +15,10 @@ import Alert from "@mui/material/Alert";
 import { Button } from "@mui/material";
 
 const columns = [
-  { id: "user_id", label: "User Id", minWidth: 150 },
-  { id: "user_name", label: "User Name", minWidth: 220 },
-  { id: "user_email", label: "User Email", minWidth: 270 },
-  { id: "user_role", label: "User Role", minWidth: 200 },
+  { id: "user_id", label: "User Id", minWidth: 180 },
+  { id: "user_name", label: "User Name", minWidth: 250 },
+  { id: "user_email", label: "User Email", minWidth: 300 },
+  { id: "user_role", label: "User Role", minWidth: 220 },
 ];
 
 export default function Users() {
@@ -39,6 +39,7 @@ export default function Users() {
       console.error("Error deleting user:", error);
     }
   };
+
   useEffect(() => {
     const getUsers = async () => {
       const res = await axios.get("https://lms-server-tktv.onrender.com/users");
@@ -68,12 +69,12 @@ export default function Users() {
         overflow: "hidden",
         padding: "20px",
         marginBottom: "20px",
-        align:"center"
+        align: "center"
       }}
     >
       <TableContainer sx={{ flexGrow: 1, overflow: "auto" }}>
         {/* Make TableContainer flexible and scrollable */}
-        <Table stickyHeader aria-label='sticky table'>
+        <Table stickyHeader aria-label="sticky table">
           <TableHead sx={{ background: "blueviolet" }}>
             <TableRow>
               {columns.map((column) => (
@@ -92,7 +93,7 @@ export default function Users() {
             {users
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((user, index) => (
-                <TableRow hover role='checkbox' tabIndex={-1} key={index}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                   {columns.map((column) => {
                     const value = user[column.id];
                     return (
@@ -101,23 +102,25 @@ export default function Users() {
                       </TableCell>
                     );
                   })}
-                  <TableCell align='center'>
-                    <div className='flex justify-center items-center gap-4'>
-                      <Link to={`/users/edit/${user.user_id}`}>
-                        <EditRoundedIcon
-                          color='action'
+                  <TableCell align="center">
+                    {user.user_role !== "admin" && (
+                      <div className="flex justify-center items-center gap-4">
+                        <Link to={`/users/edit/${user.user_id}`}>
+                          <EditRoundedIcon
+                            color="action"
+                            sx={{ cursor: "pointer" }}
+                          />
+                        </Link>
+                        <DeleteForeverRoundedIcon
+                          color="warning"
+                          onClick={() => {
+                            setSelectedUserId(user.user_id);
+                            setOpenAlert(true);
+                          }}
                           sx={{ cursor: "pointer" }}
                         />
-                      </Link>
-                      <DeleteForeverRoundedIcon
-                        color='warning'
-                        onClick={() => {
-                          setSelectedUserId(user.user_id);
-                          setOpenAlert(true);
-                        }}
-                        sx={{ cursor: "pointer" }}
-                      />
-                    </div>
+                      </div>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -126,7 +129,7 @@ export default function Users() {
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
-        component='div'
+        component="div"
         count={users.length}
         rowsPerPage={rowsPerPage}
         page={page}
@@ -144,7 +147,7 @@ export default function Users() {
           }}
         >
           <Alert
-            severity='warning'
+            severity="warning"
             onClose={() => {
               setOpenAlert(false);
             }}
@@ -152,11 +155,11 @@ export default function Users() {
             Confirm Delete User
           </Alert>
           <Alert
-            severity='success'
+            severity="success"
             action={
               <Button
-                color='inherit'
-                size='small'
+                color="inherit"
+                size="small"
                 onClick={() => deleteUser(selectedUserId, setUsers)}
               >
                 Delete
