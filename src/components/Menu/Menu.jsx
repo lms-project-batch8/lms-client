@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { FaBookOpen, FaQuestionCircle } from "react-icons/fa";
-import { MdGroupAdd } from "react-icons/md";
 import { MdViewList } from "react-icons/md";
-import { Menu as MuiMenu, MenuItem, Select } from "@mui/material"; // Import Material-UI components
+import { Menu as MuiMenu, MenuItem } from "@mui/material";
 
 const Menu = ({
   openQuizes,
@@ -11,6 +10,8 @@ const Menu = ({
   openAddUsers,
   showUsers,
   showAddUsers,
+  isTrainer, 
+  openTrainees,
 }) => {
   const [activeMenu, setActiveMenu] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
@@ -18,7 +19,7 @@ const Menu = ({
   const handleMenuClick = (menuName, callback) => {
     setActiveMenu(menuName);
     if (menuName !== "users") {
-      callback();
+      callback && callback(); 
     }
     setAnchorEl(null);
   };
@@ -29,28 +30,28 @@ const Menu = ({
     } rounded-md`;
 
   return (
-    <div className="menu h-full flex flex-col justify-between mt-[60px]">
+    <div className='menu h-full flex flex-col justify-between mt-[60px]'>
       <div>
         <div
           onClick={() => handleMenuClick("quizes", openQuizes)}
-          className="item w-full"
+          className='item w-full'
         >
           <div className={menuItemClass("quizes")}>
-            <FaQuestionCircle color="white" />
-            <div className="listItemTitle text-white">Quizes</div>
+            <FaQuestionCircle color='white' />
+            <div className='listItemTitle text-white'>Quizes</div>
           </div>
         </div>
         <div
           onClick={() => handleMenuClick("courses", openCourses)}
-          className="item w-full"
+          className='item w-full'
         >
           <div className={menuItemClass("courses")}>
-            <FaBookOpen color="white" />
-            <div className="listItemTitle text-white">Courses</div>
+            <FaBookOpen color='white' />
+            <div className='listItemTitle text-white'>Courses</div>
           </div>
         </div>
         {showUsers && (
-          <div className="item w-full relative">
+          <div className='item w-full relative'>
             <div
               className={menuItemClass("users")}
               onClick={(e) => {
@@ -58,8 +59,8 @@ const Menu = ({
                 setAnchorEl(e.currentTarget);
               }}
             >
-              <MdViewList color="white" />
-              <div className="listItemTitle text-white">Users</div>
+              <MdViewList color='white' />
+              <div className='listItemTitle text-white'>Users</div>
             </div>
             <MuiMenu
               anchorEl={anchorEl}
@@ -78,9 +79,34 @@ const Menu = ({
               }}
               getContentAnchorEl={null}
             >
-              <MenuItem onClick={() => {openUsers(); setAnchorEl(null);}}>All Users</MenuItem>
-              <MenuItem onClick={() => {openAddUsers(); setAnchorEl(null);}}>Add User</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  openUsers();
+                  setAnchorEl(null);
+                }}
+              >
+                All Users
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  openAddUsers();
+                  setAnchorEl(null);
+                }}
+              >
+                Add User
+              </MenuItem>
             </MuiMenu>
+          </div>
+        )}
+        {isTrainer && (
+          <div
+            onClick={() => handleMenuClick("trainees", openTrainees)}
+            className='item w-full'
+          >
+            <div className={menuItemClass("trainees")}>
+              <MdViewList color='white' />
+              <div className='listItemTitle text-white'>Trainees</div>
+            </div>
           </div>
         )}
       </div>
