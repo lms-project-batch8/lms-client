@@ -48,15 +48,14 @@ const LoginPage = (props) => {
     handleLogin();
   };
   useEffect(() => {
-    // Check if user is already logged in using sessionStorage
     const storedUser = sessionStorage.getItem("user");
+
     if (storedUser) {
-      // If user data is found in sessionStorage, dispatch login action
       dispatch(login(JSON.parse(storedUser)));
-      // Redirect user to home page or any other appropriate route
       navigate("/", { replace: true });
     }
   }, [dispatch, navigate]);
+  
   const handleLogin = async () => {
     handleOpen();
 

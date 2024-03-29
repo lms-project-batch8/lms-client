@@ -6,12 +6,15 @@ import Courses from "../../components/Courses";
 import Users from "../../components/Users";
 import AddUsers from "../../components/Forms/AddUsers";
 import { useSelector } from "react-redux";
+import QuizResults from "../../components/QuizResults";
 
 const Dashboard = () => {
   const [coursesOpen, setCoursesOpen] = useState(false);
   const [quizesOpen, setQuizesOpen] = useState(true);
   const [usersOpen, setUsersOpen] = useState(false);
   const [openAddUsers, setOpenAddUsers] = useState(false);
+  const [openQuizResults, setOpenQuizResults] = useState(false);
+  const [quizId, setQuizId] = useState(0); // Initialize with 0 or a suitable default value
 
   const { user } = useSelector((state) => state.auth);
 
@@ -22,6 +25,7 @@ const Dashboard = () => {
   const functionsList = [
     { func: handleQuizes, state: setQuizesOpen, value: true },
     { func: handleCourses, state: setCoursesOpen, value: true },
+    { func: handleQuizResults, state: setOpenQuizResults, value: true },
     ...(isSuperUser
       ? [
           { func: handleUsers, state: setUsersOpen, value: true },
@@ -50,6 +54,11 @@ const Dashboard = () => {
     }
   }
 
+  function handleQuizResults(quizId) {
+    setQuizId(quizId); 
+    handleState(functionsList.find((item) => item.func === handleQuizResults));
+  }
+
   function handleState(item) {
     for (const state of functionsList) {
       state.state(state === item ? state.value : false);
@@ -74,10 +83,11 @@ const Dashboard = () => {
           />
         </div>
         <div className='pl-[20%] min-pl-[170px] pt-[60px] overflow-auto h-screen'>
-          {quizesOpen && <Quizes />}
+          {quizesOpen && <Quizes handleQuizResults={handleQuizResults} />}
           {coursesOpen && <Courses />}
           {isSuperUser && usersOpen && <Users />}
           {isSuperUser && openAddUsers && <AddUsers />}
+          {openQuizResults && <QuizResults quizId={quizId} />}
         </div>
       </div>
     </main>

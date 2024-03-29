@@ -8,8 +8,9 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import QuizImage from "../../assets/quiz.jpg"; // Ensure the correct spelling of your import
 import axios from "axios";
+import ShareIcon from "@mui/icons-material/Share";
 
-const QuizCard = ({ quizId }) => {
+const QuizCard = ({ quizId, handleQuizResults }) => {
   const [quiz, setQuiz] = useState({});
 
   useEffect(() => {
@@ -48,9 +49,7 @@ const QuizCard = ({ quizId }) => {
             </Typography>
           </CardContent>
         </Link>
-        <CardActions className='flex flex-row justify-end p-2 bg-gray-100'>
-          {" "}
-          {/* Background color applied here */}
+        <CardActions className='flex flex-row justify-center p-2 bg-gray-100'>
           <Button
             size='small'
             className='text-xs text-blue-600 hover:text-blue-800'
@@ -60,7 +59,27 @@ const QuizCard = ({ quizId }) => {
               );
             }}
           >
-            Share
+            Assign
+          </Button>
+          <Button
+            size='small'
+            className='text-xs text-blue-600 hover:text-blue-800'
+            onClick={() => {
+              handleQuizResults(quizId);
+            }}
+          >
+            Scores
+          </Button>
+          <Button
+            size='small'
+            className='text-xs text-blue-600 hover:text-blue-800'
+            onClick={() => {
+              navigator.clipboard.writeText(
+                `http://localhost:3000/quiz/${quizId}`,
+              );
+            }}
+          >
+            <ShareIcon />
           </Button>
         </CardActions>
       </Card>

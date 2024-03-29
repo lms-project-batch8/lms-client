@@ -5,7 +5,7 @@ import axios from "axios";
 import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
 
-const Quizes = () => {
+const Quizes = ({ handleQuizResults }) => {
   const [quizzes, setQuizzes] = useState([]);
   const { user } = useSelector((state) => state.auth);
 
@@ -27,18 +27,18 @@ const Quizes = () => {
   }, []);
 
   return (
-    <main className="flex flex-col">
-      <div className="p-5">
+    <main className='flex flex-col'>
+      <div className='p-5'>
         {isTrainer && (
           <Link to={`/quiz/new`}>
-            <Button variant="contained">Create A Quiz</Button>
+            <Button variant='contained'>Create A Quiz</Button>
           </Link>
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
         {quizzes.map((quiz) => (
-          <QuizCard quizId={quiz.quiz_id} />
+          <QuizCard quizId={quiz.quiz_id} handleQuizResults={handleQuizResults} />
         ))}
       </div>
     </main>
