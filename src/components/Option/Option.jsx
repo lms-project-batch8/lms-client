@@ -1,19 +1,24 @@
-import "./Option.css";
+import React from "react";
+import { Paper, Typography } from "@mui/material";
 
 const Option = ({ option, index, onClick, isSelected }) => {
   return (
-    <main
-      className={`option ${isSelected ? "option--selected" : ""} hover:bg-[#D4E7C5]`}
+    <Paper
+      elevation={isSelected ? 3 : 1}
       onClick={onClick}
+      className={`flex items-center p-2 my-2 cursor-pointer transition-colors duration-300 ${
+        isSelected
+          ? "bg-gradient-to-r from-blue-200 via-purple-200 to-blue-200"
+          : "hover:bg-gray-100"
+      }`}
     >
-      <div className='option_number'>
-        <span>{index + 1}.</span>
-      </div>
-
-      <div className='option__text'>
-        <span>{option}</span>
-      </div>
-    </main>
+      <Typography variant='body1' className='mr-2 text-gray-700'>
+        {index + 1}.
+      </Typography>
+      <Typography variant='body1' className='text-gray-900'>
+        {option}
+      </Typography>
+    </Paper>
   );
 };
 

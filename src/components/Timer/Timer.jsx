@@ -4,7 +4,6 @@ import { Toaster, toast } from "react-hot-toast";
 const Timer = ({ seconds }) => {
   const [time, setTime] = useState(seconds);
 
-  // Reset the timer if the `seconds` prop changes
   useEffect(() => {
     setTime(seconds);
   }, [seconds]);
@@ -26,15 +25,25 @@ const Timer = ({ seconds }) => {
     }
   }, [time]);
 
-  const minutes = Math.floor(time / 60);
+  const hours = Math.floor(time / 3600);
+  const minutes = Math.floor((time % 3600) / 60);
   const secondsLeft = time % 60;
-  const formattedTime = `${minutes}:${
-    secondsLeft < 10 ? "0" : ""
-  }${secondsLeft}`;
+
+  const formattedTime = `${hours < 10 ? "0" : ""}${hours}:${
+    minutes < 10 ? "0" : ""
+  }${minutes}:${secondsLeft < 10 ? "0" : ""}${secondsLeft}`;
 
   return (
-    <div className={minutes > 0 ? "text-black" : "text-red-500"}>
-      <p className='font-bold text-xl'>Time Left: {formattedTime}</p>
+    <div>
+      <p
+        className={`font-bold text-xl ${
+          time > 5
+            ? "text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600"
+            : "text-red-500"
+        }`}
+      >
+        Time Left: {formattedTime}
+      </p>
       <Toaster />
     </div>
   );

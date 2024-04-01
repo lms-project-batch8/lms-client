@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import Question from "../../components/Question/Question";
 import Timer from "../Timer/Timer";
-import "./Quiz.css";
+import { Button, Container, Typography, Box } from "@mui/material";
 import QuizResultsDialog from "../../pages/QuizResultsDialog";
 import { useSelector } from "react-redux";
 
@@ -64,10 +64,9 @@ const Quiz = () => {
 
   useEffect(() => {
     if (open) {
-      // Call handleMarksSubmit only after marksObtained is updated and dialog is opened
       handleMarksSubmit(marksObtained);
     }
-  }, [marksObtained, open]); // Add open to dependency array to ensure this runs after dialog is opened
+  }, [marksObtained, open]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -81,20 +80,16 @@ const Quiz = () => {
     });
   };
 
-  const duration = parseInt(quiz.duration_minutes || 0) * 60;
-
   return (
-    <main className='quiz'>
-      <section className='quiz__header'>
-        <div className='quiz__header_title'>
-          <span>{quiz.title || "Quiz"}</span>
-        </div>
-        <div className='quiz__timer'>
-          <Timer seconds={duration} />
-        </div>
-      </section>
-      <section className='quiz__questions'>
-        {quiz.questions?.map((question, index) => (
+    <Container sx={{ padding: "30px" }}>
+      <Typography variant='h4' className='text-center my-6 text-purple-800'>
+        {quiz.title || "Quiz"}
+      </Typography>
+
+      <Timer seconds={parseInt(quiz.duration_minutes || 0) * 60} />
+
+      <div>
+        {quiz.questions?.map((question) => (
           <Question
             key={question.question_id}
             question={question.question_text}
@@ -102,23 +97,23 @@ const Quiz = () => {
             questionId={question.question_id}
             onOptionSelect={handleAnswerChange}
           />
-        )) || null}
-      </section>
-      <section
-        className='quiz__submit hover:bg-[#D4E7C5]'
+        ))}
+      </div>
+
+      <Button
+        variant='contained'
+        color='primary'
+        className='mt-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
         onClick={() => {
           checkAnswersAndCalculateMarks(quiz, userAnswers);
-          setOpen(true);
+          handleClickOpen();
         }}
       >
-        <span>Submit</span>
-      </section>
-      <QuizResultsDialog
-        open={open}
-        marks={marks}
-        marksObtained={marksObtained}
-      />
-    </main>
+        Submit
+      </Button>
+
+      <QuizResultsDialog open={open} marksObtained={marksObtained} />
+    </Container>
   );
 };
 

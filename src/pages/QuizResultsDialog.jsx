@@ -10,9 +10,9 @@ function SimpleDialog(props) {
 
   const navigate = useNavigate();
 
-  const handleClose = (event, reason) => {
+  const handleClose = () => {
     onClose();
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   return (

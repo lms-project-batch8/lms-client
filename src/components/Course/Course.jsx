@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Route, Routes, BrowserRouter, Link } from "react-router-dom";
-import VideoCard from "./VideoCard";
+import CourseCard from "./CourseCard";
 import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
 
@@ -32,20 +32,20 @@ function Course() {
     },
   ];
   return (
-    <main className="flex flex-col">
-      <div className="p-5">
+    <main className='flex flex-col'>
+      <div className='p-5'>
         {isTrainer && (
           <Link to={`/course/new`}>
-            <Button variant="contained">Create a Course</Button>
+            <Button variant='contained'>Create a Course</Button>
           </Link>
         )}
       </div>
 
-      <div className="flex p-4 gap-5">
+      <div className='flex p-4 gap-5'>
         {courses.map((course) => (
           <div key={course.id}>
             <Link to={`/courses/${course.id}`}>
-              <VideoCard
+              <CourseCard
                 courseID={course.id}
                 courseTitle={course.title}
                 courseDescription={course.description}

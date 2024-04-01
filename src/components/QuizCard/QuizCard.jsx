@@ -9,8 +9,13 @@ import Typography from "@mui/material/Typography";
 import QuizImage from "../../assets/quiz.jpg"; // Ensure the correct spelling of your import
 import axios from "axios";
 import ShareIcon from "@mui/icons-material/Share";
+import { useSelector } from "react-redux";
 
 const QuizCard = ({ quizId, handleQuizResults }) => {
+  const { user } = useSelector((state) => state.auth);
+
+  const isTrainer = user.user_role === "trainer";
+
   const [quiz, setQuiz] = useState({});
 
   useEffect(() => {
@@ -25,11 +30,8 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
     getQuiz();
   }, []);
   return (
-    <main className='cursor-pointer p-4'>
-      <Card
-        sx={{ maxWidth: 250 }}
-        className='bg-white overflow-hidden shadow-lg rounded-lg'
-      >
+    <div className='relative flex justify-center items-center bg-gray-100 m-4'>
+      <Card className='w-full max-w-sm'>
         <Link to={`/quiz/${quizId}`} state={{ quizId }} className='block'>
           <CardMedia
             component='img'
@@ -39,37 +41,38 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
             className='w-full object-cover'
           />
           <CardContent className='bg-gray-100'>
-            <Typography
-              gutterBottom
-              variant='h5'
-              component='div'
-              className='text-lg font-semibold'
-            >
+            <Typography gutterBottom variant='h5' component='div'>
               {quiz.title}
             </Typography>
           </CardContent>
         </Link>
-        <CardActions className='flex flex-row justify-center p-2 bg-gray-100'>
-          <Button
-            size='small'
-            className='text-xs text-blue-600 hover:text-blue-800'
-            onClick={() => {
-              navigator.clipboard.writeText(
-                `http://localhost:3000/quiz/${quizId}`,
-              );
-            }}
-          >
-            Assign
-          </Button>
-          <Button
-            size='small'
-            className='text-xs text-blue-600 hover:text-blue-800'
-            onClick={() => {
-              handleQuizResults(quizId);
-            }}
-          >
-            Scores
-          </Button>
+        <div className='absolute top-0 right-0 m-2'>
+          <Link to={`/quiz/${quiz.quiz_id}/edit`}>
+            <Button variant='contained' color='secondary'>
+              Edit
+            </Button>
+          </Link>
+        </div>
+        <CardActions className='flex flex-row justify-end p-2 bg-gray-100'>
+          {isTrainer && (
+            <Button
+              size='small'
+              className='text-xs text-blue-600 hover:text-blue-800'
+            >
+              Assign
+            </Button>
+          )}
+          {isTrainer && (
+            <Button
+              size='small'
+              className='text-xs text-blue-600 hover:text-blue-800'
+              onClick={() => {
+                handleQuizResults(quizId);
+              }}
+            >
+              Scores
+            </Button>
+          )}
           <Button
             size='small'
             className='text-xs text-blue-600 hover:text-blue-800'
@@ -83,7 +86,7 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
           </Button>
         </CardActions>
       </Card>
-    </main>
+    </div>
   );
 };
 
