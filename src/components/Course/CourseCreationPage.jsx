@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../Navbar/Navbar";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 const CourseCreationPage = () => {
   const [showForm, setShowForm] = useState(false);
@@ -7,29 +9,73 @@ const CourseCreationPage = () => {
   const [courseTitle, setCourseTitle] = useState("");
   const [courseDescription, setCourseDescription] = useState("");
   const [modules, setModules] = useState([]);
-
+  const [moduleName, setModuleName] = useState("");
   const [showModules, setShowModules] = useState(false);
   const [showSubmitButton, setShowSubmitButton] = useState(false);
+  const [createdModules, setCreatedModules] = useState(new Set());
+  const [courseId, setCourseId] = useState(0);
+  const [moduleId, setModuleId] = useState(0);
 
-  const handleCreateCourse = () => {
-    setShowForm(true);
-  };
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    handleCreateCourse();
+    setShowForm(true);
   }, []);
+
   const handleAddModule = () => {
     setModules([...modules, { title: "", videos: [] }]);
   };
 
-  const handleTitleChange = (e) => {
-    setCourseTitle(e.target.value);
+  const handleCourseCreate = async () => {
+    try {
+      const res = await axios.post("http://localhost:20190/courses", {
+        trainer_id: user.user_id,
+        course_title: courseTitle,
+        course_desc: courseDescription,
+      });
+      setCourseId(res.data.courseId);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleDescriptionChange = (e) => {
-    setCourseDescription(e.target.value);
+  const handleModuleCreate = async (courseId, moduleName, moduleIndex) => {
+    try {
+      const res = await axios.post("http://localhost:20190/coursemodules", {
+        course_id: courseId,
+        cm_name: moduleName,
+      });
+
+      setCreatedModules((prev) => new Set(prev).add(moduleIndex));
+      setModuleId(res.data.moduleId);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
+  const handleSaveVideo = async (moduleIndex, videoIndex, moduleId) => {
+    const video = modules[moduleIndex].videos[videoIndex];
+
+    console.log({
+      cm_id: moduleId,
+      video_title: video.title,
+      video_url: video.url,
+    });
+    
+    try {
+      await axios.post("http://localhost:20190/videos", {
+        cm_id: moduleId,
+        video_title: video.title,
+        video_url: video.url,
+      });
+      console.log("Video saved successfully");
+    } catch (error) {
+      console.error("Failed to save video", error);
+    }
+  };
+
+  const handleTitleChange = (e) => setCourseTitle(e.target.value);
+  const handleDescriptionChange = (e) => setCourseDescription(e.target.value);
   const handleModuleTitleChange = (e, index) => {
     const updatedModules = [...modules];
     updatedModules[index].title = e.target.value;
@@ -60,14 +106,9 @@ const CourseCreationPage = () => {
       description: courseDescription,
       modules: [...modules],
     };
-
     setCourses([...courses, newCourse]);
-
-    setCourseTitle("");
-    setCourseDescription("");
-    setModules([]);
     setShowForm(false);
-    console.log(JSON.stringify({ courseTitle, courseDescription, modules }));
+    // Reset states if needed
   };
 
   return (
@@ -109,6 +150,7 @@ const CourseCreationPage = () => {
                     className='m-4 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded cursor-pointer'
                     onClick={() => {
                       setShowModules(true);
+                      handleCourseCreate();
                     }}
                   >
                     Proceed
@@ -133,20 +175,36 @@ const CourseCreationPage = () => {
                         type='text'
                         value={module.title}
                         placeholder='Enter Module Title...'
-                        onChange={(e) =>
-                          handleModuleTitleChange(e, moduleIndex)
-                        }
+                        onChange={(e) => {
+                          setModuleName(e.target.value);
+                          handleModuleTitleChange(e, moduleIndex);
+                        }}
                         className='border border-gray-300 px-4 py-[7px] rounded'
                       />
-                      <button
-                        className='m-4 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded'
-                        onClick={() => handleAddVideo(moduleIndex)}
-                      >
-                        Add Videos
-                      </button>
+                      {!createdModules.has(moduleIndex) && (
+                        <button
+                          className='m-4 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded'
+                          onClick={() =>
+                            handleModuleCreate(
+                              courseId,
+                              moduleName,
+                              moduleIndex,
+                            )
+                          }
+                        >
+                          Create Module
+                        </button>
+                      )}
+                      {createdModules.has(moduleIndex) && (
+                        <button
+                          className='m-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+                          onClick={() => handleAddVideo(moduleIndex)}
+                        >
+                          Add Videos
+                        </button>
+                      )}
                     </div>
                   </div>
-
                   {module.videos.map((video, videoIndex) => (
                     <div
                       key={videoIndex}
@@ -167,7 +225,6 @@ const CourseCreationPage = () => {
                         }
                         className='border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500'
                       />
-
                       <label
                         htmlFor={`videoUrl${moduleIndex}${videoIndex}`}
                         className='block mt-2 font-semibold'
@@ -183,16 +240,23 @@ const CourseCreationPage = () => {
                         }
                         className='border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500'
                       />
+                      <button
+                        className='mt-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded'
+                        onClick={() =>
+                          handleSaveVideo(moduleIndex, videoIndex, moduleId)
+                        }
+                      >
+                        Save Video
+                      </button>
                     </div>
                   ))}
                 </div>
               ))}
             </div>
-
             <div className='p-9'>
               {showModules && (
                 <button
-                  className=' bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded'
+                  className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded'
                   onClick={handleAddModule}
                 >
                   Add Module
