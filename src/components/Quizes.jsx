@@ -20,6 +20,7 @@ const Quizes = ({ handleQuizResults }) => {
 
     try {
       const res = await axios.get(`https://lms-server-tktv.onrender.com/quiz`);
+      
       const sortedQuizzes = res.data.sort((a, b) => {
         return new Date(b.created_at) - new Date(a.created_at);
       });

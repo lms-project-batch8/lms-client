@@ -1,67 +1,144 @@
-import React, { useState } from 'react';
-import ReactPlayer from 'react-player';
- 
-function ModuleList({ modules }) {
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import ReactPlayer from "react-player/lazy";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Collapse,
+  IconButton,
+  Dialog,
+  LinearProgress,
+  Typography,
+} from "@mui/material";
+import { ExpandLess, ExpandMore, Close } from "@mui/icons-material";
+
+function ModuleList({ course_id }) {
   const [openVideoUrl, setOpenVideoUrl] = useState(null);
+  const [currentVideoId, setCurrentVideoId] = useState(null); // Add state to keep track of the current video ID
   const [openDropdownId, setOpenDropdownId] = useState(null);
- 
+  const [modules, setModules] = useState([]);
+  const [watchedVideos, setWatchedVideos] = useState({});
+
+  useEffect(() => {
+    const getModules = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:20190/coursemodules/${course_id}`,
+        );
+        setModules(res.data.modules);
+
+        const watched =
+          JSON.parse(localStorage.getItem(`watchedVideos_${course_id}`)) || {};
+        setWatchedVideos(watched);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getModules();
+  }, [course_id]);
+
   const toggleDropdown = (moduleId) => {
-    if (openDropdownId === moduleId) {
-      setOpenDropdownId(null);
-    } else {
-      setOpenDropdownId(moduleId);
-    }
+    setOpenDropdownId(openDropdownId === moduleId ? null : moduleId);
   };
- 
-  const playVideo = (videoUrl) => {
-    console.log(videoUrl);
+
+  const playVideo = (videoUrl, videoId) => {
     setOpenVideoUrl(videoUrl);
+    setCurrentVideoId(videoId); 
   };
- 
+
+  const onVideoEnd = () => {
+    const newWatchedVideos = { ...watchedVideos, [currentVideoId]: true };
+    setWatchedVideos(newWatchedVideos);
+    localStorage.setItem(
+      `watchedVideos_${course_id}`,
+      JSON.stringify(newWatchedVideos),
+    );
+    setOpenVideoUrl(null);
+  };
+
   const closeVideo = () => {
     setOpenVideoUrl(null);
   };
- 
+
+  const totalVideos = modules.reduce(
+    (acc, module) => acc + module.videos.length,
+    0,
+  );
+  const watchedCount = Object.keys(watchedVideos).length;
+  const progress = totalVideos > 0 ? (watchedCount / totalVideos) * 100 : 0;
+
   return (
-    <div className="container mx-auto py-8">
-      <ul>
+    <div className='container mx-auto p-8'>
+      <Typography variant='subtitle1'>Course Progress</Typography>
+      <LinearProgress
+        variant='determinate'
+        value={progress}
+        className='mb-2'
+        sx={{ height: "7px", borderRadius: "10px" }}
+      />
+      <Typography variant='body2' className='mb-4 pb-4'>
+        {watchedCount} of {totalVideos} videos watched ({Math.round(progress)}%)
+      </Typography>
+
+      <List component='nav' className='bg-white rounded shadow'>
         {modules.map((module) => (
-          <li key={module.id} className="m-4">
-            <div className="cursor-pointer" onClick={() => toggleDropdown(module.id)}>
-                {module.title}
-            </div>
-            {module.videos.length > 1 && openDropdownId === module.id && (
-              <ul className="list-disc ml-6">
+          <div key={module.cm_id}>
+            <ListItem button onClick={() => toggleDropdown(module.cm_id)}>
+              <ListItemText primary={module.cm_name} />
+              {openDropdownId === module.cm_id ? (
+                <ExpandLess />
+              ) : (
+                <ExpandMore />
+              )}
+            </ListItem>
+            <Collapse
+              in={openDropdownId === module.cm_id}
+              timeout='auto'
+              unmountOnExit
+            >
+              <List component='div' disablePadding>
                 {module.videos.map((video, index) => (
-                  <li key={index}>
-                    <button
-                      className="text-blue-600 underline"
-                      onClick={() => playVideo(video.url)}
-                    >
-                      {video.title}
-                    </button>
-                  </li>
+                  <ListItem key={video.video_id} className='pl-10'>
+                    <ListItemText
+                      primary={video.video_title}
+                      onClick={() => playVideo(video.video_url, video.video_id)}
+                      className='cursor-pointer text-blue-600 underline'
+                    />
+                  </ListItem>
                 ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
-      {openVideoUrl && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex justify-center items-center z-50">
-          <div className="relative w-3/4 max-w-screen-lg">
-            <div className="absolute top-0 right-0 mt-4 mr-4">
-              <button className="bg-white px-2 py-1 rounded" onClick={closeVideo}>
-                Close
-              </button>
-            </div>
-            <ReactPlayer url={openVideoUrl} controls width="100%" height="100%" playing />
+              </List>
+            </Collapse>
           </div>
-        </div>
-      )}
+        ))}
+      </List>
+      <Dialog
+        open={Boolean(openVideoUrl)}
+        onClose={closeVideo}
+        maxWidth='lg'
+        fullWidth
+      >
+        <IconButton
+          edge='start'
+          color='inherit'
+          onClick={closeVideo}
+          aria-label='close'
+          className='absolute right-2 top-2 z-50'
+        >
+          <Close />
+        </IconButton>
+        <ReactPlayer
+          url={openVideoUrl}
+          controls
+          width='1200px'
+          height='1024px'
+          playing
+          onEnded={onVideoEnd}
+        />
+      </Dialog>
     </div>
   );
 }
- 
- 
+
 export default ModuleList;

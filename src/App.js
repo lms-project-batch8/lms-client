@@ -17,7 +17,6 @@ const App = () => {
         <Routes>
           <Route element={<RequireAuth><Dashboard /></RequireAuth>} path="/" />
           <Route element={<RequireAuth><QuizLanding /></RequireAuth>} path="/quiz/:id" />
-          {/* <Route element={<RequireAuth><CourseLanding/></RequireAuth>} path="/course/:id"/> */}
           <Route element={<RequireAuth><QuizPage /></RequireAuth>} path="/quiz/:id/start" />
           <Route element={<RequireAuth><EditUser/></RequireAuth>} path="/users/edit/:id"/>
           <Route element={<RequireAuth><QuizCreationPage/></RequireAuth>} path="/quiz/new"/>

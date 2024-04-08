@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes, BrowserRouter, Link } from "react-router-dom";
 import CourseCard from "./CourseCard";
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material"; // Import CircularProgress
 import { useSelector } from "react-redux";
 import axios from "axios";
+import Loader from "../Loader";
 
 function Course() {
   const { user } = useSelector((state) => state.auth);
 
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(false); // State to manage loading
 
   const getCourses = async () => {
     try {
+      setLoading(true);
       const res = await axios.get("http://localhost:20190/courses");
 
       setCourses(res.data);
       console.log(res.data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     }
   };
 
@@ -27,29 +34,13 @@ function Course() {
 
   const isTrainer = user.user_role.toLowerCase() === "trainer";
 
-  // const courses = [
-  //   {
-  //     id: 1,
-  //     title: "Course 1",
-  //     description: "Description of course 1",
-  //     duration: "6 weeks",
-  //     tutor: "Sourav Mukherjee",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Course 2",
-  //     description: "Description of course 2",
-  //     duration: "8 weeks",
-  //     tutor: "Sourav Mukherjee",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Course 3",
-  //     description: "Description of course 3",
-  //     duration: "10 weeks",
-  //     tutor: "Sourav Mukherjee",
-  //   },
-  // ];
+  if (loading) {
+    return (
+      <div className='flex justify-center items-center h-screen'>
+        <Loader open={loading} />
+      </div>
+    );
+  }
 
   return (
     <main className='flex flex-col'>
@@ -61,7 +52,7 @@ function Course() {
         )}
       </div>
 
-      <div className='flex p-4 gap-10 flex-wrap h-5'>
+      <div className='flex p-4 gap-10 flex-wrap'>
         {courses.map((course) => (
           <div key={course.course_id}>
             <Link to={`/courses/${course.course_id}`}>

@@ -1,5 +1,5 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 function CourseCard({
   courseID,
@@ -10,6 +10,23 @@ function CourseCard({
 }) {
   if (courseDescription.length > 30)
     courseDescription = courseDescription.substring(0, 21);
+
+  const [tutor, setTutor] = useState({});
+
+  const getTutorName = async () => {
+    try {
+      const res = await axios.get(`http://localhost:20190/users/${tutorName}`);
+      console.log(res.data);
+      setTutor(res.data[0]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getTutorName();
+  }, []);
+
   return (
     <div
       className='max-w-xs rounded overflow-hidden hover:shadow-lg
@@ -32,7 +49,7 @@ function CourseCard({
           </p>
         )}
         {tutorName && (
-          <div className='text-gray-700 text-sm'>{`Posted by ${tutorName}`}</div>
+          <div className='text-gray-700 text-sm'>{`Posted by ${tutor.user_name}`}</div>
         )}
       </div>
     </div>
