@@ -14,13 +14,15 @@ const Quizes = ({ handleQuizResults }) => {
   const { user } = useSelector((state) => state.auth);
 
   const isTrainer = user.user_role.toLowerCase() === "trainer";
+  const isSuperUser = user.user_role.toLowerCase() === "admin";
 
   const getQuizzes = async () => {
     setIsLoading(true);
 
-    const quizUrl = isTrainer
-      ? "https://lms-server-tktv.onrender.com/quiz"
-      : `http://localhost:20190/assign/quiz?trainee_id=${user.user_id}`;
+    const quizUrl =
+      isTrainer & isSuperUser
+        ? "https://lms-server-tktv.onrender.com/quiz"
+        : `http://localhost:20190/assign/quiz?trainee_id=${user.user_id}`;
 
     console.log("Fetching quizzes from:", quizUrl); // Log the URL being accessed
 
