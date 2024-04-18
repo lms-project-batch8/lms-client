@@ -55,14 +55,14 @@ const LoginPage = (props) => {
       navigate("/", { replace: true });
     }
   }, [dispatch, navigate]);
-  
+
   const handleLogin = async () => {
     handleOpen();
 
     let res = {};
     try {
       res = await axios.get(
-        `https://lms-server-tktv.onrender.com/search?email=${email}`
+        `https://lms-server-15hc.onrender.com/search?email=${email}`,
       );
       const user = res.data[0];
 
@@ -91,8 +91,7 @@ const LoginPage = (props) => {
           setEmailError("Email not found! Please Enter Correct Email");
         }, 500);
       }
-          sessionStorage.setItem("user", JSON.stringify(user));
-
+      sessionStorage.setItem("user", JSON.stringify(user));
     } catch (err) {
       console.log(err);
       setTimeout(() => {
@@ -111,67 +110,67 @@ const LoginPage = (props) => {
   };
 
   return (
-    <div className="mainContainer">
+    <div className='mainContainer'>
       {openLoader && <Loader open={openLoader} />}
       {!showForgotPassword ? (
         <>
-          <div className="titleContainer">
-            <img src={Logo} className="h-40" />
+          <div className='titleContainer'>
+            <img src={Logo} className='h-40' />
             <div>Login</div>
           </div>
           <br />
-          <div className="inputContainer">
+          <div className='inputContainer'>
             <input
               value={email}
-              placeholder="Enter your email here"
+              placeholder='Enter your email here'
               onChange={(ev) => setEmail(ev.target.value)}
               className={"inputBox"}
             />
-            <label className="errorLabel">{emailError}</label>
+            <label className='errorLabel'>{emailError}</label>
           </div>
           <br />
-          <div className="inputContainer">
+          <div className='inputContainer'>
             <input
-              id="hs-toggle-password-with-checkbox"
+              id='hs-toggle-password-with-checkbox'
               type={showPassword ? "text" : "password"}
               value={password}
-              placeholder="Enter your password here"
+              placeholder='Enter your password here'
               onChange={(ev) => setPassword(ev.target.value)}
-              className="inputBox "
+              className='inputBox '
             />
-            <label className="errorLabel">{passwordError}</label>
-            <div class="flex mt-4">
+            <label className='errorLabel'>{passwordError}</label>
+            <div class='flex mt-4'>
               <input
                 data-hs-toggle-password='{
         "target": "#hs-toggle-password-with-checkbox"
       }'
-                id="hs-toggle-password-checkbox"
-                type="checkbox"
+                id='hs-toggle-password-checkbox'
+                type='checkbox'
                 checked={showPassword}
                 onChange={() => setShowPassword(!showPassword)}
-                class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                class='shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800'
               />
               <label
-                for="hs-toggle-password-checkbox"
-                class="text-sm text-gray-500 ms-3 dark:text-gray-400"
+                for='hs-toggle-password-checkbox'
+                class='text-sm text-gray-500 ms-3 dark:text-gray-400'
               >
                 Show password
               </label>
             </div>
           </div>
           <br />
-          <div className="inputContainer">
+          <div className='inputContainer'>
             <input
-              className="inputButton"
-              type="button"
+              className='inputButton'
+              type='button'
               onClick={onButtonClick}
               value={"Log in"}
             />
           </div>
           <br />
-          <div className="inputContainer text-center">
+          <div className='inputContainer text-center'>
             <button
-              className="text-blue-500 hover:text-blue-700"
+              className='text-blue-500 hover:text-blue-700'
               onClick={() => setShowForgotPassword(true)}
             >
               Forgot Password?
@@ -182,9 +181,9 @@ const LoginPage = (props) => {
         <>
           <ForgotPassword />
           <br />
-          <div className="inputContainer text-center">
+          <div className='inputContainer text-center'>
             <button
-              className="text-blue-500 hover:text-blue-700"
+              className='text-blue-500 hover:text-blue-700'
               onClick={() => setShowForgotPassword(false)}
             >
               Back to Login
