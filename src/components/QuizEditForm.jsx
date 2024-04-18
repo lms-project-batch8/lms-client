@@ -101,7 +101,7 @@ const QuizEditForm = ({ quiz }) => {
 
     debounceTimer.current = setTimeout(async () => {
       try {
-        await axios.post("http://localhost:20190/option", {
+        await axios.post("https://lms-server-15hc.onrender.com/option", {
           question_id: q.question_id,
           optionText: lastOptionText,
         });
@@ -113,7 +113,7 @@ const QuizEditForm = ({ quiz }) => {
 
   const deleteOption = async (option, qIndex, oIndex) => {
     try {
-      await axios.delete(`http://localhost:20190/option/${option.id}`);
+      await axios.delete(`https://lms-server-15hc.onrender.com/option/${option.id}`);
     } catch (error) {
       console.log(error);
     } finally {
@@ -127,7 +127,7 @@ const QuizEditForm = ({ quiz }) => {
     console.log(ques);
 
     try {
-      await axios.delete(`http://localhost:20190/question/${ques.question_id}`);
+      await axios.delete(`https://lms-server-15hc.onrender.com/question/${ques.question_id}`);
     } catch (error) {
       console.log(error);
     } finally {
@@ -138,7 +138,7 @@ const QuizEditForm = ({ quiz }) => {
   const submitQuiz = async () => {
     console.log(JSON.stringify({ quizName, quizDuration, questions }));
 
-    await axios.put(`http://localhost:20190/quiz/${quiz.quiz_id}`, {
+    await axios.put(`https://lms-server-15hc.onrender.com/quiz/${quiz.quiz_id}`, {
       quizName,
       quizDuration,
       questions,

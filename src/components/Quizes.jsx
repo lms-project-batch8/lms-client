@@ -22,7 +22,7 @@ const Quizes = ({ handleQuizResults }) => {
     const quizUrl =
       isTrainer & isSuperUser
         ? "https://lms-server-tktv.onrender.com/quiz"
-        : `http://localhost:20190/assign/quiz?trainee_id=${user.user_id}`;
+        : `https://lms-server-15hc.onrender.com/assign/quiz?trainee_id=${user.user_id}`;
 
     console.log("Fetching quizzes from:", quizUrl); // Log the URL being accessed
 

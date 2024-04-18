@@ -19,7 +19,7 @@ function CourseCard({
   const getTutorName = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:20190/users/${tutorName}`,
+        `https://lms-server-15hc.onrender.com/users/${tutorName}`,
       );
       if (data && data.length > 0) {
         setTutor({ name: data[0].user_name });

@@ -22,7 +22,7 @@ function TraineeDetails() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(`http://localhost:20190/users/trainees`);
+      const res = await axios.get(`https://lms-server-15hc.onrender.com/users/trainees`);
       setTrainees(res.data);
     };
     fetchData();
@@ -32,12 +32,12 @@ function TraineeDetails() {
     if (selectedTrainee) {
       const fetchDetails = async () => {
         const coursesResponse = await axios.get(
-          `http://localhost:20190/courseProgress?user_id=${selectedTrainee.user_id}`,
+          `https://lms-server-15hc.onrender.com/courseProgress?user_id=${selectedTrainee.user_id}`,
         );
         setCourses(coursesResponse.data);
 
         const quizzesResponse = await axios.get(
-          `http://localhost:20190/marks?user_id=${selectedTrainee.user_id}`,
+          `https://lms-server-15hc.onrender.com/marks?user_id=${selectedTrainee.user_id}`,
         );
         setQuizzes(quizzesResponse.data);
       };

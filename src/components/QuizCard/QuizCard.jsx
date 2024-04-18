@@ -34,7 +34,7 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
     };
 
     const getTrainees = async () => {
-      const res = await axios.get("http://localhost:20190/users/trainees");
+      const res = await axios.get("https://lms-server-15hc.onrender.com/users/trainees");
 
       const newOptionList = res.data.map((user) => ({
         value: user.user_id.toString(),
@@ -57,7 +57,7 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
   };
 
   const handleAssign = async () => {
-    await axios.post("http://localhost:20190/assign", {
+    await axios.post("https://lms-server-15hc.onrender.com/assign", {
       trainer_id: user.user_id,
       data: selectedOptions,
       quiz_id: quizId,

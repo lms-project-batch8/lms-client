@@ -12,7 +12,7 @@ function CourseDashBoard() {
 
   const getCourse = async () => {
     try {
-      const res = await axios.get(`http://localhost:20190/courses/${id}`);
+      const res = await axios.get(`https://lms-server-15hc.onrender.com/courses/${id}`);
       console.log(res.data);
       if (res.data && res.data.length > 0) {
         setCourse(res.data[0]);

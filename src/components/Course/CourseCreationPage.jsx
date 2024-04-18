@@ -38,7 +38,7 @@ const CourseCreationPage = () => {
 
   const handleCourseCreate = async () => {
     try {
-      const res = await axios.post("http://localhost:20190/courses", {
+      const res = await axios.post("https://lms-server-15hc.onrender.com/courses", {
         trainer_id: user.user_id,
         course_title: courseTitle,
         course_desc: courseDescription,
@@ -51,7 +51,7 @@ const CourseCreationPage = () => {
 
   const handleModuleCreate = async (courseId, moduleName, moduleIndex) => {
     try {
-      const res = await axios.post("http://localhost:20190/coursemodules", {
+      const res = await axios.post("https://lms-server-15hc.onrender.com/coursemodules", {
         course_id: courseId,
         cm_name: moduleName,
       });
@@ -74,7 +74,7 @@ const CourseCreationPage = () => {
     const moduleId = modules[moduleIndex].id; // Use the moduleId assigned when the module was created
 
     try {
-      await axios.post("http://localhost:20190/videos", {
+      await axios.post("https://lms-server-15hc.onrender.com/videos", {
         cm_id: moduleId,
         video_title: video.title,
         video_url: video.url,

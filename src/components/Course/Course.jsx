@@ -21,7 +21,7 @@ function Course() {
   const getCourses = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:20190/courses");
+      const res = await axios.get("https://lms-server-15hc.onrender.com/courses");
 
       setCourses(res.data);
       console.log(res.data);
@@ -37,7 +37,7 @@ function Course() {
   const getTrainees = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:20190/users/trainees");
+      const res = await axios.get("https://lms-server-15hc.onrender.com/users/trainees");
 
       const newOptionList = res.data.map((user) => ({
         value: user.user_id.toString(),
@@ -70,7 +70,7 @@ function Course() {
   };
 
   const handleAssign = async () => {
-    await axios.post("http://localhost:20190/assign", {
+    await axios.post("https://lms-server-15hc.onrender.com/assign", {
       trainer_id: user.user_id,
       data: selectedOptions,
       quiz_id: null,

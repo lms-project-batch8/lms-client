@@ -74,7 +74,7 @@ const QuizForm = () => {
 
   const submitQuiz = async () => {
     console.log(JSON.stringify({ quizName, quizDuration, questions }));
-    await axios.post("http://localhost:20190/quiz", {
+    await axios.post("https://lms-server-15hc.onrender.com/quiz", {
       quizName,
       quizDuration,
       questions,

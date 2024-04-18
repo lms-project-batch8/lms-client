@@ -29,7 +29,7 @@ function ModuleList({ course_id }) {
   const getModules = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:20190/coursemodules/${course_id}`,
+        `https://lms-server-15hc.onrender.com/coursemodules/${course_id}`,
       );
       setModules(res.data.modules);
 
@@ -48,7 +48,7 @@ function ModuleList({ course_id }) {
     const getProgress = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:20190/courseProgress/get?cm_id=${course_id}&user_id=${user.user_id}`,
+          `https://lms-server-15hc.onrender.com/courseProgress/get?cm_id=${course_id}&user_id=${user.user_id}`,
         );
         if (res.data.length > 0) {
           setCourseProgress(res.data[0]);
@@ -102,7 +102,7 @@ function ModuleList({ course_id }) {
 
   const updateProgress = async () => {
     await axios.put(
-      `http://localhost:20190/courseProgress/${courseProgress.cp_id}`,
+      `https://lms-server-15hc.onrender.com/courseProgress/${courseProgress.cp_id}`,
       {
         course_progress_details: watchedVideos,
         course_complition_percentage: progress,
