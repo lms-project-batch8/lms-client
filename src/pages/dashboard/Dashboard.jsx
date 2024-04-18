@@ -7,6 +7,7 @@ import Users from "../../components/Users";
 import AddUsers from "../../components/Forms/AddUsers";
 import { useSelector } from "react-redux";
 import QuizResults from "../../components/QuizResults";
+import TraineeDetails from "../../components/TraineeDetails";
 
 const Dashboard = () => {
   const [coursesOpen, setCoursesOpen] = useState(false);
@@ -15,6 +16,7 @@ const Dashboard = () => {
   const [openAddUsers, setOpenAddUsers] = useState(false);
   const [openQuizResults, setOpenQuizResults] = useState(false);
   const [quizId, setQuizId] = useState(0); // Initialize with 0 or a suitable default value
+  const [traineeDetailsOpen, setTraineeDetailsOpen] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
 
@@ -26,6 +28,7 @@ const Dashboard = () => {
     { func: handleQuizes, state: setQuizesOpen, value: true },
     { func: handleCourses, state: setCoursesOpen, value: true },
     { func: handleQuizResults, state: setOpenQuizResults, value: true },
+    { func: handleTraineeDetails, state: setTraineeDetailsOpen, value: true },
     ...(isSuperUser
       ? [
           { func: handleUsers, state: setUsersOpen, value: true },
@@ -55,8 +58,15 @@ const Dashboard = () => {
   }
 
   function handleQuizResults(quizId) {
-    setQuizId(quizId); 
+    setQuizId(quizId);
     handleState(functionsList.find((item) => item.func === handleQuizResults));
+  }
+
+  function handleTraineeDetails() {
+    setTraineeDetailsOpen(true);
+    handleState(
+      functionsList.find((item) => item.func === handleTraineeDetails),
+    );
   }
 
   function handleState(item) {
@@ -80,6 +90,7 @@ const Dashboard = () => {
             showUsers={isSuperUser}
             showAddUsers={isSuperUser}
             isTrainer={isTrainer}
+            openTrainees={handleTraineeDetails}
           />
         </div>
         <div className='pl-[20%] min-pl-[170px] pt-[60px] overflow-auto h-screen'>
@@ -88,6 +99,7 @@ const Dashboard = () => {
           {isSuperUser && usersOpen && <Users />}
           {isSuperUser && openAddUsers && <AddUsers />}
           {openQuizResults && <QuizResults quizId={quizId} />}
+          {traineeDetailsOpen && isTrainer && <TraineeDetails />}
         </div>
       </div>
     </main>

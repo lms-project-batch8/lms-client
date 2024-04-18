@@ -10,7 +10,7 @@ const Menu = ({
   openAddUsers,
   showUsers,
   showAddUsers,
-  isTrainer, 
+  isTrainer,
   openTrainees,
 }) => {
   const [activeMenu, setActiveMenu] = useState("");
@@ -19,7 +19,7 @@ const Menu = ({
   const handleMenuClick = (menuName, callback) => {
     setActiveMenu(menuName);
     if (menuName !== "users") {
-      callback && callback(); 
+      callback && callback();
     }
     setAnchorEl(null);
   };

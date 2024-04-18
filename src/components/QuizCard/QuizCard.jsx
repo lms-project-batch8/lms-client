@@ -10,9 +10,14 @@ import QuizImage from "../../assets/quiz.jpg"; // Ensure the correct spelling of
 import axios from "axios";
 import ShareIcon from "@mui/icons-material/Share";
 import { useSelector } from "react-redux";
+import Select from "react-select";
 
 const QuizCard = ({ quizId, handleQuizResults }) => {
   const { user } = useSelector((state) => state.auth);
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [optionList, setOptionList] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState();
 
   const isTrainer = user.user_role === "trainer";
 
@@ -23,12 +28,55 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
       const res = await axios.get(
         `https://lms-server-tktv.onrender.com/quiz/${quizId}`,
       );
+
       console.log(res.data);
       setQuiz(res.data);
     };
 
+    const getTrainees = async () => {
+      const res = await axios.get("http://localhost:20190/users/trainees");
+
+      const newOptionList = res.data.map((user) => ({
+        value: user.user_id.toString(),
+        label: user.user_name,
+      }));
+
+      setOptionList(newOptionList);
+    };
+
+    getTrainees();
     getQuiz();
   }, []);
+
+  const openTrainerDropdown = (user_id) => {
+    setIsFormOpen(true);
+  };
+
+  const closeFormOverlay = () => {
+    setIsFormOpen(false);
+  };
+
+  const handleAssign = async () => {
+    await axios.post("http://localhost:20190/assign", {
+      trainer_id: user.user_id,
+      data: selectedOptions,
+      quiz_id: quizId,
+      course_id: null,
+    });
+  };
+
+  const submitForm = () => {
+    console.log(selectedOptions);
+    console.log({ trainee_id: user.user_id, data: selectedOptions });
+    handleAssign();
+    setSelectedOptions();
+    closeFormOverlay();
+  };
+
+  function handleSelect(data) {
+    setSelectedOptions(data);
+  }
+
   return (
     <div className='relative flex justify-center items-center bg-gray-100 m-4'>
       <Card className='w-full max-w-sm'>
@@ -46,18 +94,21 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
             </Typography>
           </CardContent>
         </Link>
-        <div className='absolute top-0 right-0 m-2'>
-          <Link to={`/quiz/${quiz.quiz_id}/edit`}>
-            <Button variant='contained' color='secondary'>
-              Edit
-            </Button>
-          </Link>
-        </div>
+        {isTrainer && (
+          <div className='absolute top-0 right-0 m-2'>
+            <Link to={`/quiz/${quiz.quiz_id}/edit`}>
+              <Button variant='contained' color='secondary'>
+                Edit
+              </Button>
+            </Link>
+          </div>
+        )}
         <CardActions className='flex flex-row justify-end p-2 bg-gray-100'>
           {isTrainer && (
             <Button
               size='small'
               className='text-xs text-blue-600 hover:text-blue-800'
+              onClick={openTrainerDropdown}
             >
               Assign
             </Button>
@@ -86,6 +137,45 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
           </Button>
         </CardActions>
       </Card>
+      {isFormOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 2,
+            backgroundColor: "purple",
+            padding: "20px",
+            borderRadius: "8px",
+            minWidth: "500px",
+          }}
+        >
+          <Select
+            options={optionList}
+            placeholder='Select Trainees'
+            value={selectedOptions}
+            onChange={handleSelect}
+            isSearchable={true}
+            isMulti
+            className='mb-4'
+          />
+          <div className='flex justify-between'>
+            <button
+              onClick={closeFormOverlay}
+              className='border py-1 px-2 rounded text-white font-bold'
+            >
+              Close
+            </button>
+            <button
+              onClick={submitForm}
+              className='border py-1 px-2 rounded text-white font-bold'
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

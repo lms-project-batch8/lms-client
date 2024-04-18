@@ -10,10 +10,9 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Modal,
-  TextField,
   Button as MuiButton,
   Alert,
+  Typography,
 } from "@mui/material";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
@@ -31,8 +30,6 @@ export default function Users() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openAlert, setOpenAlert] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -63,99 +60,87 @@ export default function Users() {
     setPage(0);
   };
 
-  const openFormOverlay = (userId) => {
-    setCurrentUserId(userId);
-    setIsFormOpen(true);
-  };
+  const adminUsers = users.filter((user) => user.user_role === "admin");
+  const traineeUsers = users.filter((user) => user.user_role === "trainee");
+  const trainerUsers = users.filter((user) => user.user_role === "trainer");
 
-  const closeFormOverlay = () => {
-    setIsFormOpen(false);
-  };
+  const renderUsersTable = (usersToRender, roleTitle) => {
+    // Determine if we should show the "Action" column based on the role
+    const showActionColumn = roleTitle !== "Admin Users";
 
-  const submitForm = () => {
-    // Form submission logic goes here
-    console.log("Form submitted for user ID:", currentUserId);
-    closeFormOverlay();
+    return (
+      <>
+        <Typography variant='h6' sx={{ marginY: 2 }}>
+          {roleTitle}
+        </Typography>
+        <TableContainer component={Paper} sx={{ marginBottom: 4 }}>
+          <Table stickyHeader aria-label={`${roleTitle} table`}>
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+                {showActionColumn && <TableCell>Action</TableCell>}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {usersToRender
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((user) => (
+                  <TableRow
+                    hover
+                    role='checkbox'
+                    tabIndex={-1}
+                    key={user.user_id}
+                  >
+                    {columns.map((column) => {
+                      const value = user[column.id];
+                      return (
+                        <TableCell key={column.id} align={column.align}>
+                          {value}
+                        </TableCell>
+                      );
+                    })}
+                    {showActionColumn && (
+                      <TableCell align='center'>
+                        <div className='flex justify-center items-center gap-4'>
+                          <Link to={`/users/edit/${user.user_id}`}>
+                            <EditRoundedIcon
+                              color='action'
+                              sx={{ cursor: "pointer" }}
+                            />
+                          </Link>
+                          <DeleteForeverRoundedIcon
+                            color='warning'
+                            onClick={() => {
+                              setSelectedUserId(user.user_id);
+                              setOpenAlert(true);
+                            }}
+                            sx={{ cursor: "pointer" }}
+                          />
+                        </div>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </>
+    );
   };
 
   return (
-    <Paper
-      sx={{
-        width: "100%",
-        overflow: "hidden",
-        padding: "20px",
-        marginBottom: "20px",
-      }}
-    >
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label='sticky table'>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((user) => (
-                <TableRow
-                  hover
-                  role='checkbox'
-                  tabIndex={-1}
-                  key={user.user_id}
-                >
-                  {columns.map((column) => {
-                    const value = user[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        {value}
-                      </TableCell>
-                    );
-                  })}
-                  <TableCell align='center'>
-                    {user.user_role !== "admin" && (
-                      <div className='flex justify-center items-center gap-4'>
-                        <Link to={`/users/edit/${user.user_id}`}>
-                          <EditRoundedIcon
-                            color='action'
-                            sx={{ cursor: "pointer" }}
-                          />
-                        </Link>
-                        <DeleteForeverRoundedIcon
-                          color='warning'
-                          onClick={() => {
-                            setSelectedUserId(user.user_id);
-                            setOpenAlert(true);
-                          }}
-                          sx={{ cursor: "pointer" }}
-                        />
-                        {user.user_role === "trainee" && (
-                          <span
-                            variant='contained'
-                            color='primary'
-                            onClick={() => openFormOverlay(user.user_id)}
-                            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer'
-                          >
-                            Assign
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <div>
+      {renderUsersTable(adminUsers, "Admin Users")}
+      {renderUsersTable(trainerUsers, "Trainer Users")}
+      {renderUsersTable(traineeUsers, "Trainee Users")}
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component='div'
@@ -182,27 +167,6 @@ export default function Users() {
           Are you sure you want to delete this user?
         </Alert>
       )}
-      <Modal
-        open={isFormOpen}
-        onClose={closeFormOverlay}
-        className='flex items-center justify-center p-4'
-      >
-        <div
-          className='bg-white p-8 rounded-lg space-y-4'
-          style={{ width: 400 }}
-        >
-          <TextField label='Some Field' variant='outlined' fullWidth />   
-          <TextField label='Another Field' variant='outlined' fullWidth />
-          <div className='flex justify-end gap-2'>    
-            <MuiButton variant='contained' color='primary' onClick={submitForm}>
-              Submit
-            </MuiButton>
-            <MuiButton variant='outlined' onClick={closeFormOverlay}>
-              Cancel
-            </MuiButton>
-          </div>
-        </div>
-      </Modal>
-    </Paper>
+    </div>
   );
 }

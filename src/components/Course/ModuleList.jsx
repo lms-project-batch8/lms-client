@@ -12,31 +12,60 @@ import {
   Typography,
 } from "@mui/material";
 import { ExpandLess, ExpandMore, Close } from "@mui/icons-material";
+import { useSelector } from "react-redux";
 
 function ModuleList({ course_id }) {
   const [openVideoUrl, setOpenVideoUrl] = useState(null);
-  const [currentVideoId, setCurrentVideoId] = useState(null); // Add state to keep track of the current video ID
+  const [currentVideoId, setCurrentVideoId] = useState(null);
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const [modules, setModules] = useState([]);
   const [watchedVideos, setWatchedVideos] = useState({});
 
+  const [courseProgress, setCourseProgress] = useState({});
+  const [progressPercent, setProgressPercent] = useState(0);
+
+  const { user } = useSelector((state) => state.auth);
+
+  const getModules = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:20190/coursemodules/${course_id}`,
+      );
+      setModules(res.data.modules);
+
+      const watched = JSON.parse(courseProgress.course_progress_details) || {};
+      setWatchedVideos(watched);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const getModules = async () => {
+    getModules();
+  }, [course_id]);
+
+  useEffect(() => {
+    const getProgress = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:20190/coursemodules/${course_id}`,
+          `http://localhost:20190/courseProgress/get?cm_id=${course_id}&user_id=${user.user_id}`,
         );
-        setModules(res.data.modules);
-
-        const watched =
-          JSON.parse(localStorage.getItem(`watchedVideos_${course_id}`)) || {};
-        setWatchedVideos(watched);
+        if (res.data.length > 0) {
+          setCourseProgress(res.data[0]);
+          console.log(courseProgress);
+          setProgressPercent(res.data[0].course_complition_percentage);
+          setWatchedVideos(res.data[0].course_progress_details);
+        } else {
+          console.log("No data available for course progress.");
+          setCourseProgress({});
+          setProgressPercent(0);
+        }
       } catch (error) {
         console.error(error);
       }
     };
 
-    getModules();
+    getProgress();
   }, [course_id]);
 
   const toggleDropdown = (moduleId) => {
@@ -45,17 +74,19 @@ function ModuleList({ course_id }) {
 
   const playVideo = (videoUrl, videoId) => {
     setOpenVideoUrl(videoUrl);
-    setCurrentVideoId(videoId); 
+    setCurrentVideoId(videoId);
   };
 
   const onVideoEnd = () => {
     const newWatchedVideos = { ...watchedVideos, [currentVideoId]: true };
     setWatchedVideos(newWatchedVideos);
-    localStorage.setItem(
-      `watchedVideos_${course_id}`,
-      JSON.stringify(newWatchedVideos),
-    );
+    console.log(newWatchedVideos);
+
     setOpenVideoUrl(null);
+
+    if (courseProgress && courseProgress.cp_id) {
+      updateProgress();
+    }
   };
 
   const closeVideo = () => {
@@ -66,20 +97,39 @@ function ModuleList({ course_id }) {
     (acc, module) => acc + module.videos.length,
     0,
   );
-  const watchedCount = Object.keys(watchedVideos).length;
+  const watchedCount = Object.keys(watchedVideos ?? {}).length; // Safeguard against null
   const progress = totalVideos > 0 ? (watchedCount / totalVideos) * 100 : 0;
+
+  const updateProgress = async () => {
+    await axios.put(
+      `http://localhost:20190/courseProgress/${courseProgress.cp_id}`,
+      {
+        course_progress_details: watchedVideos,
+        course_complition_percentage: progress,
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (courseProgress && courseProgress.cp_id) {
+      // Check if courseProgress is valid
+
+      updateProgress();
+    }
+  }, [progress, courseProgress]);
 
   return (
     <div className='container mx-auto p-8'>
       <Typography variant='subtitle1'>Course Progress</Typography>
       <LinearProgress
         variant='determinate'
-        value={progress}
+        value={parseInt(progressPercent)}
         className='mb-2'
         sx={{ height: "7px", borderRadius: "10px" }}
       />
       <Typography variant='body2' className='mb-4 pb-4'>
-        {watchedCount} of {totalVideos} videos watched ({Math.round(progress)}%)
+        {watchedCount} of {totalVideos} videos watched (
+        {Math.round(progressPercent)}%)
       </Typography>
 
       <List component='nav' className='bg-white rounded shadow'>

@@ -27,7 +27,7 @@ const Quiz = () => {
     let totalMarks = 0;
     let totalPossibleMarks = 0;
 
-    quiz.questions.forEach((ques) => {
+    quiz.questions?.forEach((ques) => {
       const userSelectedOption = userAnswers[ques.question_id]
         ? ques.options.find(
             (option) =>
@@ -46,6 +46,8 @@ const Quiz = () => {
       }
     });
 
+    console.log("Total Marks:", totalMarks);
+    console.log("Total Possible Marks:", totalPossibleMarks);
     setMarksObtained(totalMarks);
     setMarks(totalPossibleMarks);
   };
@@ -112,7 +114,11 @@ const Quiz = () => {
         Submit
       </Button>
 
-      <QuizResultsDialog open={open} marksObtained={marksObtained} />
+      <QuizResultsDialog
+        open={open}
+        marks={marks}
+        marksObtained={marksObtained}
+      />
     </Container>
   );
 };

@@ -18,20 +18,23 @@ const Quizes = ({ handleQuizResults }) => {
   const getQuizzes = async () => {
     setIsLoading(true);
 
-    try {
-      const res = await axios.get(`https://lms-server-tktv.onrender.com/quiz`);
-      
-      const sortedQuizzes = res.data.sort((a, b) => {
-        return new Date(b.created_at) - new Date(a.created_at);
-      });
+    const quizUrl = isTrainer
+      ? "https://lms-server-tktv.onrender.com/quiz"
+      : `http://localhost:20190/assign/quiz?trainee_id=${user.user_id}`;
 
+    console.log("Fetching quizzes from:", quizUrl); // Log the URL being accessed
+
+    try {
+      const response = await axios.get(quizUrl);
+      const sortedQuizzes = response.data.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
+      );
       setQuizzes(sortedQuizzes);
     } catch (error) {
-      console.log(error);
+      console.error("Failed to fetch quizzes:", error);
+      alert("Failed to load quizzes. Check the console for more details.");
     } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
+      setIsLoading(false);
     }
   };
 
