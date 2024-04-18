@@ -10,7 +10,7 @@ const QuizEditPage = () => {
 
   const getQuiz = async () => {
     const res = await axios.get(
-      `https://lms-server-tktv.onrender.com/quiz/${id}`,
+      `https://lms-server-15hc.onrender.com/quiz/${id}`,
     );
 
     console.log(res.data);
