@@ -22,7 +22,7 @@ function Course() {
   const isSuperUser = user.user_role.toLowerCase() === "admin";
 
   const courseUrl =
-    isTrainer & isSuperUser
+    isTrainer || isSuperUser
       ? "https://lms-server-15hc.onrender.com/courses"
       : `https://lms-server-15hc.onrender.com/assign/course?trainee_id=${user.user_id}`;
 
@@ -45,7 +45,9 @@ function Course() {
   const getTrainees = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("https://lms-server-15hc.onrender.com/users/trainees");
+      const res = await axios.get(
+        "https://lms-server-15hc.onrender.com/users/trainees",
+      );
 
       const newOptionList = res.data.map((user) => ({
         value: user.user_id.toString(),

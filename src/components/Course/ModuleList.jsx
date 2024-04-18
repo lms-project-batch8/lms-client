@@ -97,7 +97,7 @@ function ModuleList({ course_id }) {
     (acc, module) => acc + module.videos.length,
     0,
   );
-  const watchedCount = Object.keys(watchedVideos ?? {}).length; // Safeguard against null
+  const watchedCount = Object.keys(watchedVideos ?? {}).length; 
   const progress = totalVideos > 0 ? (watchedCount / totalVideos) * 100 : 0;
 
   const updateProgress = async () => {
@@ -112,7 +112,6 @@ function ModuleList({ course_id }) {
 
   useEffect(() => {
     if (courseProgress && courseProgress.cp_id) {
-      // Check if courseProgress is valid
 
       updateProgress();
     }
