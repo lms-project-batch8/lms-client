@@ -18,10 +18,22 @@ function Course() {
   const [selectedOptions, setSelectedOptions] = useState();
   const [courseId, setCourseId] = useState(0);
 
+  const isTrainer = user.user_role.toLowerCase() === "trainer";
+  const isSuperUser = user.user_role.toLowerCase() === "admin";
+
+  const quizUrl =
+    isTrainer & isSuperUser
+      ? "https://lms-server-15hc.onrender.com/courses"
+      : `https://lms-server-15hc.onrender.com/assign/course?trainee_id=${user.user_id}`;
+
   const getCourses = async () => {
     try {
       setLoading(true);
+<<<<<<< HEAD
       const res = await axios.get("https://lms-server-15hc.onrender.com/courses");
+=======
+      const res = await axios.get(quizUrl);
+>>>>>>> 12912cbb3aa9623102e684c259d98234919718e4
 
       setCourses(res.data);
       console.log(res.data);
@@ -89,8 +101,6 @@ function Course() {
   function handleSelect(data) {
     setSelectedOptions(data);
   }
-
-  const isTrainer = user.user_role.toLowerCase() === "trainer";
 
   if (loading) {
     return (
