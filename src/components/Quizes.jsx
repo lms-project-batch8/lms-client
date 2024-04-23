@@ -24,10 +24,10 @@ const Quizes = ({ handleQuizResults }) => {
         ? "https://lms-server-15hc.onrender.com/quiz"
         : `https://lms-server-15hc.onrender.com/assign/quiz?trainee_id=${user.user_id}`;
 
-    console.log("Fetching quizzes from:", quizUrl); // Log the URL being accessed
+    console.log("Fetching quizzes from:", quizUrl); 
 
     try {
-      const response = await axios.get(quizUrl);
+      const response = await axios.get("https://lms-server-15hc.onrender.com/quiz");
       const sortedQuizzes = response.data.sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at),
       );
