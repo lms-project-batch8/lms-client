@@ -49,6 +49,7 @@ function Course() {
         "https://lms-server-15hc.onrender.com/users/trainees",
       );
 
+      console.log(res.data);
       const newOptionList = res.data.map((user) => ({
         value: user.user_id.toString(),
         label: user.user_name,
@@ -65,9 +66,35 @@ function Course() {
   };
 
   useEffect(() => {
-    getCourses();
-    getTrainees();
-  }, []);
+    const fetchData = async () => {
+      if (!user.user_id) return; // Make sure user_id is available
+
+      try {
+        setLoading(true);
+        const coursesResponse = await axios.get(courseUrl);
+        setCourses(coursesResponse.data);
+        console.log(coursesResponse.data);
+
+        if (user.user_role.toLowerCase() === "trainer") {
+          const traineesResponse = await axios.get(
+            "https://lms-server-15hc.onrender.com/users/trainees",
+          );
+          console.log(traineesResponse.data);
+          const newOptionList = traineesResponse.data.map((user) => ({
+            value: user.user_id.toString(),
+            label: user.user_name,
+          }));
+          setOptionList(newOptionList);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [user.user_id]); // Adding user.user_id as a dependency
 
   const openTrainerDropdown = (courseID) => {
     console.log(courseID);
