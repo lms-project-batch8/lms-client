@@ -1,10 +1,9 @@
-import { Dashboard } from "@mui/icons-material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "../Navbar/Navbar";
+import { backend } from "../../url";
 
 const EditUser = () => {
   const { id } = useParams();
@@ -18,7 +17,7 @@ const EditUser = () => {
   async function fetchData() {
     try {
       const res = await axios.get(
-        `https://lms-server-tktv.onrender.com/users/${id}`,
+        `${backend}/users/${id}`,
       );
 
       const user = res.data[0];

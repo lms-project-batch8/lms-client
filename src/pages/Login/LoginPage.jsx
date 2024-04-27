@@ -7,6 +7,8 @@ import axios from "axios";
 import Loader from "../../components/Loader";
 import ForgotPassword from "../../components/ForgotPassword"; // Adjust the path as necessary
 import Logo from "../../assets/PursuitLogin.png";
+import { backend } from "../../url";
+
 const LoginPage = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -62,7 +64,7 @@ const LoginPage = (props) => {
     let res = {};
     try {
       res = await axios.get(
-        `https://lms-server-15hc.onrender.com/search?email=${email}`,
+        `${backend}/search?email=${email}`,
       );
       const user = res.data[0];
 

@@ -8,19 +8,16 @@ class ErrorBoundary extends Component {
   }
 
   static getDerivedStateFromError() {
-    // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
     console.error("Error caught by Error Boundary: ", error, errorInfo);
-    // Set state to redirect after catching an error
     this.setState({ redirect: true });
   }
 
   render() {
     if (this.state.redirect) {
-      // Render the Navigate component to redirect
       return <Navigate to='/error' />;
     }
 

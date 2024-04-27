@@ -67,7 +67,7 @@ const Menu = ({
               open={Boolean(anchorEl)}
               onClose={() => setAnchorEl(null)}
               MenuListProps={{
-                style: { width: anchorEl ? anchorEl.clientWidth : undefined }, // Set width to match the menu width
+                style: { width: anchorEl ? anchorEl.clientWidth : undefined }, 
               }}
               anchorOrigin={{
                 vertical: "bottom",

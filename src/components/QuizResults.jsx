@@ -9,13 +9,14 @@ import {
   Paper,
 } from "@mui/material";
 import axios from "axios";
+import { backend } from "../url";
 
 const QuizResults = ({ quizId }) => {
   const [scores, setScores] = useState([]);
 
   const getScores = async () => {
     const res = await axios.get(
-      `https://lms-server-tktv.onrender.com/marks/${quizId}`,
+      `${backend}/marks/${quizId}`,
     );
 
     setScores(res.data);

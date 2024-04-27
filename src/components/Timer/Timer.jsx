@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 
-const Timer = ({ seconds }) => {
+const Timer = ({ seconds, onTimeExpired }) => {
   const [time, setTime] = useState(seconds);
 
   useEffect(() => {
@@ -17,13 +17,16 @@ const Timer = ({ seconds }) => {
               icon: "⏰",
             });
           }
+          if (prevTime === 1) {
+            onTimeExpired();
+          }
           return prevTime - 1;
         });
       }, 1000);
 
       return () => clearInterval(intervalId);
     }
-  }, [time]);
+  }, [time, onTimeExpired]);
 
   const hours = Math.floor(time / 3600);
   const minutes = Math.floor((time % 3600) / 60);

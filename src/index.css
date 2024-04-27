@@ -20,8 +20,6 @@ body {
     sans-serif;
 }
 
-::-webkit-scrollbar {display:none;}
-
 * {
   box-sizing: border-box;
 }

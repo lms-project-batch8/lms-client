@@ -13,16 +13,19 @@ import {
   Divider,
 } from "@mui/material";
 import axios from "axios";
+import { backend } from "../url";
 
 function TraineeDetails() {
-  const [courses, setCourses] = useState([]);
+  const [courseProgresses, setCourseProgresses] = useState([]);
   const [quizzes, setQuizzes] = useState([]);
   const [trainees, setTrainees] = useState([]);
   const [selectedTrainee, setSelectedTrainee] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(`https://lms-server-15hc.onrender.com/users/trainees`);
+      const res = await axios.get(
+        `${backend}/users?user_role=trainee`,
+      );
       setTrainees(res.data);
     };
     fetchData();
@@ -32,12 +35,12 @@ function TraineeDetails() {
     if (selectedTrainee) {
       const fetchDetails = async () => {
         const coursesResponse = await axios.get(
-          `https://lms-server-15hc.onrender.com/courseProgress?user_id=${selectedTrainee.user_id}`,
+          `${backend}/courseprogress?user_id=${selectedTrainee.user_id}`,
         );
-        setCourses(coursesResponse.data);
+        setCourseProgresses(coursesResponse.data);
 
         const quizzesResponse = await axios.get(
-          `https://lms-server-15hc.onrender.com/marks?user_id=${selectedTrainee.user_id}`,
+          `${backend}/marks?user_id=${selectedTrainee.user_id}`,
         );
         setQuizzes(quizzesResponse.data);
       };
@@ -76,23 +79,50 @@ function TraineeDetails() {
                 Courses Progress
               </Typography>
               <List dense>
-                {courses.map((course, index) => (
+                {courseProgresses.map((progress, index) => (
                   <React.Fragment key={index}>
                     <ListItem>
                       <ListItemText
-                        primary={course.course_title}
+                        primary={progress.course_title}
                         secondary={
                           <LinearProgress
                             variant='determinate'
-                            value={course.course_complition_percentage}
+                            value={
+                              isNaN(
+                                Math.round(
+                                  (progress.number_of_videos_done /
+                                    progress.number_of_videos_total) *
+                                    100,
+                                ),
+                              ) === true
+                                ? 0
+                                : Math.round(
+                                    (progress.number_of_videos_done /
+                                      progress.number_of_videos_total) *
+                                      100,
+                                  )
+                            }
                           />
                         }
                       />
                       <Typography variant='caption'>
-                        {course.course_complition_percentage}%
+                        {isNaN(
+                          Math.round(
+                            (progress.number_of_videos_done /
+                              progress.number_of_videos_total) *
+                              100,
+                          ),
+                        ) === true
+                          ? 0
+                          : Math.round(
+                              (progress.number_of_videos_done /
+                                progress.number_of_videos_total) *
+                                100,
+                            )}
+                        %
                       </Typography>
                     </ListItem>
-                    {index < courses.length - 1 && <Divider />}
+                    <Divider />
                   </React.Fragment>
                 ))}
               </List>
@@ -113,7 +143,7 @@ function TraineeDetails() {
                         primary={quiz.title}
                         secondary={
                           <Typography variant='overline' color='Highlight'>
-                            Mark: {quiz.marks}
+                            Marks: {quiz.marks}
                           </Typography>
                         }
                       />

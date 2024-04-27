@@ -11,62 +11,33 @@ import {
   LinearProgress,
   Typography,
 } from "@mui/material";
-import { ExpandLess, ExpandMore, Close } from "@mui/icons-material";
+import {
+  ExpandLess,
+  ExpandMore,
+  Close,
+} from "@mui/icons-material";
 import { useSelector } from "react-redux";
+import VerifiedIcon from "@mui/icons-material/Verified";
+import { backend } from "../../url";
 
-function ModuleList({ course_id }) {
+function ModuleList({ course }) {
+  useEffect(() => {
+    getProgress();
+    getSeenVideos();
+  });
+
   const [openVideoUrl, setOpenVideoUrl] = useState(null);
-  const [currentVideoId, setCurrentVideoId] = useState(null);
   const [openDropdownId, setOpenDropdownId] = useState(null);
-  const [modules, setModules] = useState([]);
-  const [watchedVideos, setWatchedVideos] = useState({});
 
-  const [courseProgress, setCourseProgress] = useState({});
   const [progressPercent, setProgressPercent] = useState(0);
 
   const { user } = useSelector((state) => state.auth);
 
-  const getModules = async () => {
-    try {
-      const res = await axios.get(
-        `https://lms-server-15hc.onrender.com/coursemodules/${course_id}`,
-      );
-      setModules(res.data.modules);
+  const [watchedCount, setWatchedCount] = useState(0);
 
-      const watched = JSON.parse(courseProgress.course_progress_details) || {};
-      setWatchedVideos(watched);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const [currentWatchingVideoId, setCurrentWatchingVideoId] = useState(0);
 
-  useEffect(() => {
-    getModules();
-  }, [course_id]);
-
-  useEffect(() => {
-    const getProgress = async () => {
-      try {
-        const res = await axios.get(
-          `https://lms-server-15hc.onrender.com/courseProgress/get?cm_id=${course_id}&user_id=${user.user_id}`,
-        );
-        if (res.data.length > 0) {
-          setCourseProgress(res.data[0]);
-          console.log(courseProgress);
-          setProgressPercent(res.data[0].course_complition_percentage);
-          setWatchedVideos(res.data[0].course_progress_details);
-        } else {
-          console.log("No data available for course progress.");
-          setCourseProgress({});
-          setProgressPercent(0);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    getProgress();
-  }, [course_id]);
+  const [seenVideos, setSeenVideos] = useState([]);
 
   const toggleDropdown = (moduleId) => {
     setOpenDropdownId(openDropdownId === moduleId ? null : moduleId);
@@ -74,18 +45,42 @@ function ModuleList({ course_id }) {
 
   const playVideo = (videoUrl, videoId) => {
     setOpenVideoUrl(videoUrl);
-    setCurrentVideoId(videoId);
+    setCurrentWatchingVideoId(videoId);
   };
 
-  const onVideoEnd = () => {
-    const newWatchedVideos = { ...watchedVideos, [currentVideoId]: true };
-    setWatchedVideos(newWatchedVideos);
-    console.log(newWatchedVideos);
+  const getProgress = async () => {
+    try {
+      const res = await axios.get(
+        `${backend}/courseprogress?user_id=${user.user_id}&course_id=${course.course_id}`,
+      );
 
+      setWatchedCount(res.data[0].number_of_videos_done);
+      console.log(watchedCount);
+      setProgressPercent((watchedCount / course.video_count) * 100);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getSeenVideos = async () => {
+    const res = await axios.get(
+      `${backend}/video/completed?user_id=${user.user_id}`,
+    );
+    setSeenVideos(res.data);
+  };
+
+  const onVideoEnd = async () => {
     setOpenVideoUrl(null);
 
-    if (courseProgress && courseProgress.cp_id) {
-      updateProgress();
+    try {
+      await axios.put(
+        `${backend}/courseprogress?user_id=${user.user_id}&course_id=${course.course_id}&video_id=${currentWatchingVideoId}`,
+      );
+    } catch (err) {
+      console.log(err);
+    } finally {
+      getProgress();
+      getSeenVideos();
     }
   };
 
@@ -93,68 +88,65 @@ function ModuleList({ course_id }) {
     setOpenVideoUrl(null);
   };
 
-  const totalVideos = modules.reduce(
-    (acc, module) => acc + module.videos.length,
-    0,
-  );
-  const watchedCount = Object.keys(watchedVideos ?? {}).length; 
-  const progress = totalVideos > 0 ? (watchedCount / totalVideos) * 100 : 0;
-
-  const updateProgress = async () => {
-    await axios.put(
-      `https://lms-server-15hc.onrender.com/courseProgress/${courseProgress.cp_id}`,
-      {
-        course_progress_details: watchedVideos,
-        course_complition_percentage: progress,
-      },
-    );
-  };
-
-  useEffect(() => {
-    if (courseProgress && courseProgress.cp_id) {
-
-      updateProgress();
-    }
-  }, [progress, courseProgress]);
+  const isVideoSeen = (videoId) =>
+    seenVideos.some((video) => video.video_id === videoId);
 
   return (
     <div className='container mx-auto p-8'>
       <Typography variant='subtitle1'>Course Progress</Typography>
       <LinearProgress
         variant='determinate'
-        value={parseInt(progressPercent)}
+        value={progressPercent}
         className='mb-2'
         sx={{ height: "7px", borderRadius: "10px" }}
       />
       <Typography variant='body2' className='mb-4 pb-4'>
-        {watchedCount} of {totalVideos} videos watched (
-        {Math.round(progressPercent)}%)
+        {watchedCount} of {course.video_count === null ? 0 : course.video_count}{" "}
+        videos watched ({Math.round(progressPercent)}%)
       </Typography>
 
-      <List component='nav' className='bg-white rounded shadow'>
-        {modules.map((module) => (
-          <div key={module.cm_id}>
-            <ListItem button onClick={() => toggleDropdown(module.cm_id)}>
-              <ListItemText primary={module.cm_name} />
-              {openDropdownId === module.cm_id ? (
+      <List component='nav' className='bg-gray-200 rounded shadow'>
+        {course.modules?.map((module, index) => (
+          <div key={module.module_id}>
+            <ListItem
+              button
+              onClick={() => toggleDropdown(module.module_id)}
+              style={{
+                backgroundColor: index % 2 === 0 ? "#f0f0f0" : "#ffffff",
+              }}
+            >
+              <ListItemText primary={module.module_name} />
+              {openDropdownId === module.module_id ? (
                 <ExpandLess />
               ) : (
                 <ExpandMore />
               )}
             </ListItem>
             <Collapse
-              in={openDropdownId === module.cm_id}
+              in={openDropdownId === module.module_id}
               timeout='auto'
               unmountOnExit
             >
               <List component='div' disablePadding>
                 {module.videos.map((video, index) => (
-                  <ListItem key={video.video_id} className='pl-10'>
+                  <ListItem
+                    key={video.video_id}
+                    style={{
+                      paddingLeft: "10px",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "between",
+                      backgroundColor: index % 2 === 0 ? "#f0f0f0" : "#ffffff",
+                    }}
+                  >
                     <ListItemText
                       primary={video.video_title}
                       onClick={() => playVideo(video.video_url, video.video_id)}
-                      className='cursor-pointer text-blue-600 underline'
+                      className='cursor-pointer text-blue-600 font-bold text-2xl'
                     />
+                    {isVideoSeen(video.video_id) && (
+                      <VerifiedIcon color='success' />
+                    )}
                   </ListItem>
                 ))}
               </List>

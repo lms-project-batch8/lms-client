@@ -5,6 +5,7 @@ import axios from "axios";
 import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import Loader from "./Loader";
+import { backend } from "../url";
 
 const Quizes = ({ handleQuizResults }) => {
   const [quizzes, setQuizzes] = useState([]);
@@ -21,8 +22,8 @@ const Quizes = ({ handleQuizResults }) => {
 
     const quizUrl =
       isTrainer || isSuperUser
-        ? "https://lms-server-15hc.onrender.com/quiz"
-        : `https://lms-server-15hc.onrender.com/assign/quiz?trainee_id=${user.user_id}`;
+        ? `${backend}/quiz`
+        : `${backend}/assign/quizzes?user_id=${user.user_id}`;
 
     console.log("Fetching quizzes from:", quizUrl);
 
@@ -36,7 +37,9 @@ const Quizes = ({ handleQuizResults }) => {
       console.error("Failed to fetch quizzes:", error);
       alert("Failed to load quizzes. Check the console for more details.");
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
   };
 

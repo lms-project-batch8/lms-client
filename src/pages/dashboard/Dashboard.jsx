@@ -93,7 +93,7 @@ const Dashboard = () => {
             openTrainees={handleTraineeDetails}
           />
         </div>
-        <div className='pl-[20%] min-pl-[170px] pt-[60px] overflow-auto h-screen'>
+        <div className='pl-[20%] min-pl-[170px] pt-[60px] overflow-auto h-screen w-full'>
           {quizesOpen && <Quizes handleQuizResults={handleQuizResults} />}
           {coursesOpen && <Courses />}
           {isSuperUser && usersOpen && <Users />}

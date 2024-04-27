@@ -6,41 +6,34 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import QuizImage from "../../assets/quiz.jpg"; // Ensure the correct spelling of your import
+import QuizImage from "../../assets/quiz.webp";
 import axios from "axios";
 import ShareIcon from "@mui/icons-material/Share";
 import { useSelector } from "react-redux";
 import Select from "react-select";
+import { backend } from "../../url";
 
 const QuizCard = ({ quizId, handleQuizResults }) => {
   const { user } = useSelector((state) => state.auth);
-
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [optionList, setOptionList] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState();
 
   const isTrainer = user.user_role === "trainer";
-
   const [quiz, setQuiz] = useState({});
 
   useEffect(() => {
     const getQuiz = async () => {
-      const res = await axios.get(
-        `https://lms-server-tktv.onrender.com/quiz/${quizId}`,
-      );
-
-      console.log(res.data);
+      const res = await axios.get(`${backend}/quiz/${quizId}`);
       setQuiz(res.data);
     };
 
     const getTrainees = async () => {
-      const res = await axios.get("https://lms-server-15hc.onrender.com/users/trainees");
-
+      const res = await axios.get(`${backend}/users?user_role=trainee`);
       const newOptionList = res.data.map((user) => ({
         value: user.user_id.toString(),
         label: user.user_name,
       }));
-
       setOptionList(newOptionList);
     };
 
@@ -48,7 +41,7 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
     getQuiz();
   }, []);
 
-  const openTrainerDropdown = (user_id) => {
+  const openTrainerDropdown = () => {
     setIsFormOpen(true);
   };
 
@@ -57,19 +50,16 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
   };
 
   const handleAssign = async () => {
-    await axios.post("https://lms-server-15hc.onrender.com/assign", {
+    await axios.post(`${backend}/assign/quiz`, {
       trainer_id: user.user_id,
-      data: selectedOptions,
+      trainee_ids: selectedOptions,
       quiz_id: quizId,
-      course_id: null,
     });
   };
 
   const submitForm = () => {
-    console.log(selectedOptions);
-    console.log({ trainee_id: user.user_id, data: selectedOptions });
     handleAssign();
-    setSelectedOptions();
+    setSelectedOptions([]);
     closeFormOverlay();
   };
 
@@ -78,35 +68,25 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
   }
 
   return (
-    <div className='relative flex justify-center items-center bg-gray-100 m-4'>
-      <Card className='w-full max-w-sm'>
+    <div className='relative flex justify-center items-center bg-gray-100 m-4 shadow-lg rounded-lg'>
+      <Card className='w-full max-w-sm rounded-lg overflow-hidden'>
         <Link to={`/quiz/${quizId}`} state={{ quizId }} className='block'>
           <CardMedia
             component='img'
             alt='quiz image'
-            height='140'
             image={QuizImage}
-            className='w-full object-cover'
+            className='h-48 w-full object-contain'
           />
-          <CardContent className='bg-gray-100'>
+          <CardContent className='bg-white'>
             <Typography gutterBottom variant='h5' component='div'>
               {quiz.title}
             </Typography>
           </CardContent>
         </Link>
-        {isTrainer && (
-          <div className='absolute top-0 right-0 m-2'>
-            <Link to={`/quiz/${quiz.quiz_id}/edit`}>
-              <Button variant='contained' color='secondary'>
-                Edit
-              </Button>
-            </Link>
-          </div>
-        )}
-        <CardActions className='flex flex-row justify-end p-2 bg-gray-100'>
+        <CardActions className='flex flex-row justify-end p-2 bg-white'>
           {isTrainer && (
             <Button
-              size='small'
+              size='large'
               className='text-xs text-blue-600 hover:text-blue-800'
               onClick={openTrainerDropdown}
             >
@@ -115,8 +95,8 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
           )}
           {isTrainer && (
             <Button
-              size='small'
-              className='text-xs text-blue-600 hover:text-blue-800'
+              size='large'
+              className='text-lg text-blue-600 hover:text-blue-800'
               onClick={() => {
                 handleQuizResults(quizId);
               }}
@@ -125,7 +105,7 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
             </Button>
           )}
           <Button
-            size='small'
+            size='large'
             className='text-xs text-blue-600 hover:text-blue-800'
             onClick={() => {
               navigator.clipboard.writeText(
@@ -138,41 +118,31 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
         </CardActions>
       </Card>
       {isFormOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            zIndex: 2,
-            backgroundColor: "purple",
-            padding: "20px",
-            borderRadius: "8px",
-            minWidth: "500px",
-          }}
-        >
-          <Select
-            options={optionList}
-            placeholder='Select Trainees'
-            value={selectedOptions}
-            onChange={handleSelect}
-            isSearchable={true}
-            isMulti
-            className='mb-4'
-          />
-          <div className='flex justify-between'>
-            <button
-              onClick={closeFormOverlay}
-              className='border py-1 px-2 rounded text-white font-bold'
-            >
-              Close
-            </button>
-            <button
-              onClick={submitForm}
-              className='border py-1 px-2 rounded text-white font-bold'
-            >
-              Submit
-            </button>
+        <div className='fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex justify-center items-center'>
+          <div className='bg-white p-6 w-[600px] rounded-lg shadow-xl z-50'>
+            <Select
+              options={optionList}
+              placeholder='Select Trainees'
+              value={selectedOptions}
+              onChange={handleSelect}
+              isSearchable={true}
+              isMulti
+              className='mb-4 z-50'
+            />
+            <div className='flex justify-between'>
+              <button
+                onClick={closeFormOverlay}
+                className='border py-1 px-2 rounded text-white bg-blue-500 hover:bg-blue-700 font-bold'
+              >
+                Close
+              </button>
+              <button
+                onClick={submitForm}
+                className='border py-1 px-2 rounded text-white bg-blue-500 hover:bg-blue-700 font-bold'
+              >
+                Submit
+              </button>
+            </div>
           </div>
         </div>
       )}

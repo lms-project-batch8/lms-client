@@ -3,26 +3,35 @@ import ModuleList from "./ModuleList";
 import { useParams } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import axios from "axios";
+import Loader from "../Loader";
+import { backend } from "../../url";
 
 function CourseDashBoard() {
   const { id } = useParams();
+  const [loading, setLoading] = useState(false);
 
   const [course, setCourse] = useState({});
   const [error, setError] = useState(false);
 
   const getCourse = async () => {
     try {
-      const res = await axios.get(`https://lms-server-15hc.onrender.com/courses/${id}`);
+      setLoading(true);
+
+      const res = await axios.get(`${backend}/courses/${id}`);
+
       console.log(res.data);
+
       if (res.data && res.data.length > 0) {
         setCourse(res.data[0]);
-        setError(false); // Reset error state in case of successful fetch
+        setError(false);
       } else {
-        throw new Error("No data found"); // Throw an error if no data is returned
+        throw new Error("No data found");
       }
     } catch (error) {
       console.log(error);
-      setError(true); // Set error state to true to trigger error message display
+      setError(true);
+    } finally {
+      setTimeout(() => setLoading(false), [1000]);
     }
   };
 
@@ -31,7 +40,6 @@ function CourseDashBoard() {
   }, [id]);
 
   if (error) {
-    // Render an error message or an error component
     return (
       <div>
         <Navbar />
@@ -46,24 +54,30 @@ function CourseDashBoard() {
 
   return (
     <>
-      <Navbar />
-      <div className='flex h-screen'>
-        <section className='w-1/2 p-8 bg-gray-200'>
-          <h1 className='text-2xl font-bold mb-4'>
-            {course.course_title || "Loading..."}
-          </h1>
-          <p className='text-lg mb-8'>
-            {course.course_desc ||
-              "Course description will appear here once loaded."}
-          </p>
-        </section>
-        <section className='w-full h-full p-8 bg-gray-100 overflow-y-auto'>
-          <div>
-            <h1 className='text-2xl font-bold mb-4'>Contents</h1>
-            <ModuleList course_id={course.course_id} />
+      {loading ? (
+        <Loader open={loading} />
+      ) : (
+        <>
+          <Navbar />
+          <div className='flex h-screen'>
+            <section className='w-1/2 p-8 bg-gray-200'>
+              <h1 className='text-2xl font-bold mb-4'>
+                {course.course_title || "Loading..."}
+              </h1>
+              <p className='text-lg mb-8'>
+                {course.course_description ||
+                  "Course description will appear here once loaded."}
+              </p>
+            </section>
+            <section className='w-full h-full p-8 bg-gray-100 overflow-y-auto'>
+              <div>
+                <h1 className='text-2xl font-bold mb-4'>Contents</h1>
+                <ModuleList course={course} />
+              </div>
+            </section>
           </div>
-        </section>
-      </div>
+        </>
+      )}
     </>
   );
 }

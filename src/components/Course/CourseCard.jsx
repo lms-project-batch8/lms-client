@@ -1,29 +1,28 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { backend } from "../../url";
 
 function CourseCard({
   courseID,
   courseTitle,
   courseDescription,
-  tutorName,
+  tutorID,
   openTrainerDropdown,
 }) {
-  if (courseDescription.length > 30)
+  if (courseDescription && courseDescription.length > 30)
     courseDescription = `${courseDescription.substring(0, 27)}...`;
 
-  const [tutor, setTutor] = useState({ name: "" });
+  const [tutor, setTutor] = useState({});
 
   const { user } = useSelector((state) => state.auth);
 
   const getTutorName = async () => {
     try {
-      const { data } = await axios.get(
-        `https://lms-server-15hc.onrender.com/users/${tutorName}`,
-      );
-      if (data && data.length > 0) {
-        setTutor({ name: data[0].user_name });
-      }
+      const res = await axios.get(`${backend}/users/${tutorID}`);
+
+      console.log(res.data[0]);
+      setTutor(res.data[0]);
     } catch (error) {
       console.error(error);
     }
@@ -31,7 +30,7 @@ function CourseCard({
 
   useEffect(() => {
     getTutorName();
-  }, [tutorName]);
+  }, []);
 
   return (
     <div className='max-w-xs rounded-lg overflow-hidden shadow-lg bg-white flex flex-col cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-105 mb-16'>
@@ -47,8 +46,10 @@ function CourseCard({
         {courseDescription && (
           <p className='text-gray-700 text-base'>{courseDescription}</p>
         )}
-        {tutor.name && (
-          <span className='text-gray-600 text-sm'>Posted by {tutor.name}</span>
+        {tutor && tutor.user_name && (
+          <span className='text-gray-600 text-sm'>
+            Posted by {tutor.user_name}
+          </span>
         )}
       </div>
       {user.user_role === "trainer" && (

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CourseCard from "./CourseCard";
-import { Button, CircularProgress } from "@mui/material"; // Import CircularProgress
+import { Button } from "@mui/material"; // Import CircularProgress
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Loader from "../Loader";
 import Select from "react-select";
+import { backend } from "../../url";
 
 function Course() {
   const { user } = useSelector((state) => state.auth);
@@ -23,51 +24,12 @@ function Course() {
 
   const courseUrl =
     isTrainer || isSuperUser
-      ? "https://lms-server-15hc.onrender.com/courses"
-      : `https://lms-server-15hc.onrender.com/assign/course?trainee_id=${user.user_id}`;
-
-  const getCourses = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(courseUrl);
-
-      setCourses(res.data);
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
-    }
-  };
-
-  const getTrainees = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(
-        "https://lms-server-15hc.onrender.com/users/trainees",
-      );
-
-      console.log(res.data);
-      const newOptionList = res.data.map((user) => ({
-        value: user.user_id.toString(),
-        label: user.user_name,
-      }));
-
-      setOptionList(newOptionList);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
-    }
-  };
+      ? `${backend}/courses`
+      : `${backend}/assign/courses?user_id=${user.user_id}`;
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!user.user_id) return; // Make sure user_id is available
+      if (!user.user_id) return;
 
       try {
         setLoading(true);
@@ -77,7 +39,7 @@ function Course() {
 
         if (user.user_role.toLowerCase() === "trainer") {
           const traineesResponse = await axios.get(
-            "https://lms-server-15hc.onrender.com/users/trainees",
+            `${backend}/users?user_role=trainee`,
           );
           console.log(traineesResponse.data);
           const newOptionList = traineesResponse.data.map((user) => ({
@@ -89,12 +51,14 @@ function Course() {
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
       }
     };
 
     fetchData();
-  }, [user.user_id]); // Adding user.user_id as a dependency
+  }, [user.user_id]);
 
   const openTrainerDropdown = (courseID) => {
     console.log(courseID);
@@ -107,10 +71,9 @@ function Course() {
   };
 
   const handleAssign = async () => {
-    await axios.post("https://lms-server-15hc.onrender.com/assign", {
+    await axios.post(`${backend}/assign/course`, {
       trainer_id: user.user_id,
-      data: selectedOptions,
-      quiz_id: null,
+      trainee_ids: selectedOptions,
       course_id: courseId,
     });
   };
@@ -152,8 +115,8 @@ function Course() {
               <CourseCard
                 courseID={course.course_id}
                 courseTitle={course.course_title}
-                courseDescription={course.course_desc}
-                tutorName={course.trainer_id}
+                courseDescription={course.course_description}
+                tutorID={course.trainer_id}
                 openTrainerDropdown={openTrainerDropdown}
               />
             </Link>

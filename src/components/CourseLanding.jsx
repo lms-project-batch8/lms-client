@@ -8,7 +8,7 @@ const CourseLanding = () => {
 
   const getCourse = async () => {
     try {
-      const res = await axios.get("https://lms-server-15hc.onrender.com/courses/all");
+      const res = await axios.get(`${backend}/courses/all`);
 
       console.log(res.data);
     } catch (error) {}

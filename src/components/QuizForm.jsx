@@ -1,22 +1,49 @@
 import React, { useState } from "react";
+import { IconButton } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { IconButton } from "@mui/material";
-import axios from "axios";
+import { read, utils } from "xlsx";
 import Navbar from "./Navbar/Navbar";
+import axios from "axios";
+import { backend } from "../url";
 
 const QuizForm = () => {
   const [quizName, setQuizName] = useState("");
   const [quizDuration, setQuizDuration] = useState("");
-  const [questions, setQuestions] = useState([
-    {
-      questionText: "",
-      options: [{ id: 1, text: "" }],
-      correctAnswer: null,
-      marks: 0,
-    },
-  ]);
+  const [questions, setQuestions] = useState([]);
+
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const data = new Uint8Array(event.target.result);
+        const workbook = read(data, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = utils.sheet_to_json(sheet, { header: 1 });
+        parseExcelData(jsonData);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  };
+
+  const parseExcelData = (data) => {
+    setQuizName(data[1][0]);
+    setQuizDuration(data[1][1]);
+    const newQuestions = data
+      .slice(3)
+      .filter((row) => row.length > 4 && row[0])
+      .map((row, index) => ({
+        questionText: row[0],
+        options: row
+          .slice(1, -2)
+          .map((option, idx) => ({ id: idx + 1, text: option })),
+        correctAnswer: row[row.length - 2],
+        marks: parseInt(row[row.length - 1]),
+      }));
+    setQuestions(newQuestions);
+  };
 
   const handleQuizNameChange = (event) => {
     setQuizName(event.target.value);
@@ -38,22 +65,27 @@ const QuizForm = () => {
     setQuestions(newQuestions);
   };
 
-  const handleCorrectAnswerChange = (qIndex, optionText) => {
+  const handleCorrectAnswerChange = (qIndex, event) => {
     const newQuestions = [...questions];
-    newQuestions[qIndex].correctAnswer = optionText;
+    newQuestions[qIndex].correctAnswer = event.target.value;
     setQuestions(newQuestions);
   };
 
   const handleMarksChange = (qIndex, event) => {
     const newQuestions = [...questions];
-    newQuestions[qIndex].marks = event.target.value;
+    newQuestions[qIndex].marks = parseInt(event.target.value);
     setQuestions(newQuestions);
   };
 
   const addQuestion = () => {
     setQuestions([
       ...questions,
-      { questionText: "", options: [], correctAnswer: "", marks: "" },
+      {
+        questionText: "",
+        options: [{ id: 1, text: "" }],
+        correctAnswer: "",
+        marks: "",
+      },
     ]);
   };
 
@@ -74,7 +106,7 @@ const QuizForm = () => {
 
   const submitQuiz = async () => {
     console.log(JSON.stringify({ quizName, quizDuration, questions }));
-    await axios.post("https://lms-server-15hc.onrender.com/quiz", {
+    await axios.post(`${backend}/quiz`, {
       quizName,
       quizDuration,
       questions,
@@ -83,10 +115,23 @@ const QuizForm = () => {
 
   return (
     <>
-    <Navbar />
+      <Navbar />
       <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4'>
         <div className='w-full max-w-2xl p-5 bg-white shadow-md rounded-lg'>
           <h2 className='text-center text-2xl font-bold mb-4'>Create Quiz</h2>
+          <input
+            type='file'
+            accept='.xlsx, .xls'
+            onChange={handleFile}
+            className='file-input p-2 mb-4'
+          />
+          <a
+            href={`${process.env.PUBLIC_URL}/LMS Quiz Creation Template.xlsx`}
+            download
+            className='btn btn-primary mb-4 bg-purple-500 px-4 py-2 rounded text-white font-bold'
+          >
+            Download Quiz Template
+          </a>
           <div className='flex gap-4 mb-4'>
             <input
               type='text'
@@ -115,13 +160,6 @@ const QuizForm = () => {
                 onChange={(e) => handleQuestionChange(qIndex, e)}
                 className='input input-bordered w-full mb-2 p-2 bg-slate-100'
               />
-              <input
-                type='number'
-                placeholder={`Marks for Question ${qIndex + 1}`}
-                value={parseInt(q.marks)}
-                onChange={(e) => handleMarksChange(qIndex, e)}
-                className='input input-bordered w-full mb-2 p-2 bg-slate-100'
-              />
               {q.options.map((option, oIndex) => (
                 <input
                   key={oIndex}
@@ -132,23 +170,6 @@ const QuizForm = () => {
                   className='input input-bordered w-full mb-1 p-1 bg-slate-100'
                 />
               ))}
-
-              <div className='flex flex-col justify-center gap-1 bg-slate-100 p-2 rounded-md'>
-                <select
-                  value={q.correctAnswer || ""}
-                  onChange={(e) =>
-                    handleCorrectAnswerChange(qIndex, e.target.value)
-                  }
-                  className='input input-bordered bg-slate-50 w-full mb-2 p-1'
-                >
-                  <option value=''>Select Correct Answer</option>
-                  {q.options.map((option, index) => (
-                    <option key={index} value={option.text}>
-                      {`Option ${index + 1}: ${option.text}`}
-                    </option>
-                  ))}
-                </select>
-              </div>
               <IconButton
                 onClick={() => addOption(qIndex)}
                 color='primary'
@@ -157,6 +178,25 @@ const QuizForm = () => {
                 <AddCircleOutlineIcon />
                 <span className='text-sm p-1'>Add Option</span>
               </IconButton>
+              <select
+                value={q.correctAnswer || ""}
+                onChange={(e) => handleCorrectAnswerChange(qIndex, e)}
+                className='input input-bordered bg-slate-50 w-full mb-2 p-1'
+              >
+                <option value=''>Select Correct Answer</option>
+                {q.options.map((option, index) => (
+                  <option key={index} value={option.text}>
+                    {`Option ${index + 1}: ${option.text}`}
+                  </option>
+                ))}
+              </select>
+              <input
+                type='number'
+                placeholder='Marks'
+                value={q.marks}
+                onChange={(e) => handleMarksChange(qIndex, e)}
+                className='input input-bordered w-full mb-2 p-2 bg-slate-100'
+              />
               <IconButton
                 onClick={() => deleteQuestion(qIndex)}
                 color='error'

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { TextField, Button } from "@mui/material";
 import PasswordChange from "../components/PasswordChange";
 import axios from "axios";
+import { backend } from "../url";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -11,7 +12,7 @@ const ForgotPassword = () => {
 
   const getOtp = async () => {
     const res = await axios.post(
-      `https://lms-server-tktv.onrender.com/send-otp`,
+      `${backend}/send-otp`,
       { email },
     );
 

@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
+import { backend } from "../url";
 
 const columns = [
   { id: "user_id", label: "User Id", minWidth: 150 },
@@ -33,7 +34,7 @@ export default function Users() {
 
   useEffect(() => {
     const getUsers = async () => {
-      const res = await axios.get("https://lms-server-tktv.onrender.com/users");
+      const res = await axios.get(`${backend}/users`);
       setUsers(res.data);
     };
 
@@ -42,8 +43,8 @@ export default function Users() {
 
   const deleteUser = async (id) => {
     try {
-      await axios.delete(`https://lms-server-tktv.onrender.com/users/${id}`);
-      const res = await axios.get("https://lms-server-tktv.onrender.com/users");
+      await axios.delete(`${backend}/users/${id}`);
+      const res = await axios.get(`${backend}/users`);
       setUsers(res.data);
       setOpenAlert(false);
     } catch (error) {

@@ -6,6 +6,7 @@ import Timer from "../Timer/Timer";
 import { Button, Container, Typography, Box } from "@mui/material";
 import QuizResultsDialog from "../../pages/QuizResultsDialog";
 import { useSelector } from "react-redux";
+import { backend } from "../../url";
 
 const Quiz = () => {
   const [quiz, setQuiz] = useState({});
@@ -54,9 +55,7 @@ const Quiz = () => {
 
   useEffect(() => {
     const getQuiz = async () => {
-      const res = await axios.get(
-        `https://lms-server-tktv.onrender.com/quiz/${id}`,
-      );
+      const res = await axios.get(`${backend}/quiz/${id}`);
       console.log("Quiz Data:", res.data);
       setQuiz(res.data);
     };
@@ -75,11 +74,16 @@ const Quiz = () => {
   };
 
   const handleMarksSubmit = async (marksObtained) => {
-    await axios.post(`https://lms-server-tktv.onrender.com/marks`, {
+    await axios.post(`${backend}/marks`, {
       quiz_id: quiz.quiz_id,
       user_id: user.user_id,
       marks: marksObtained,
     });
+  };
+
+  const handleSubmit = () => {
+    checkAnswersAndCalculateMarks(quiz, userAnswers);
+    handleClickOpen();
   };
 
   return (
@@ -88,7 +92,10 @@ const Quiz = () => {
         {quiz.title || "Quiz"}
       </Typography>
 
-      <Timer seconds={parseInt(quiz.duration_minutes || 0) * 60} />
+      <Timer
+        seconds={parseInt(quiz.duration_minutes || 0) * 60}
+        onTimeExpired={handleSubmit}
+      />
 
       <div>
         {quiz.questions?.map((question) => (

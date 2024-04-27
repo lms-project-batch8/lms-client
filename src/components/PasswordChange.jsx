@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import { Alert } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { backend } from "../url";
 
 function PasswordChange({ otp, email }) {
   const [userOtp, setUserOtp] = useState("");
@@ -15,7 +16,7 @@ function PasswordChange({ otp, email }) {
 
   const updatePassword = async () => {
     const response = await axios.get(
-      `https://lms-server-tktv.onrender.com/search?email=${email}`,
+      `${backend}/search?email=${email}`,
     );
 
     const userData = response.data[0];
@@ -29,7 +30,7 @@ function PasswordChange({ otp, email }) {
     }
 
     const updateResponse = await axios.put(
-      `https://lms-server-tktv.onrender.com/users/${userId}`,
+      `${backend}/users/${userId}`,
       { user_password: confirmPassword },
     );
   };

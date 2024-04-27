@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import QuizEditForm from "../components/QuizEditForm";
+import { backend } from "../url";
 
 const QuizEditPage = () => {
   const { id } = useParams();
@@ -10,7 +11,7 @@ const QuizEditPage = () => {
 
   const getQuiz = async () => {
     const res = await axios.get(
-      `https://lms-server-15hc.onrender.com/quiz/${id}`,
+      `${backend}/quiz/${id}`,
     );
 
     console.log(res.data);

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Navbar from "./Navbar/Navbar";
+import { backend } from "../url";
 
 const QuizLanding = () => {
   const [quiz, setQuiz] = useState({});
@@ -9,9 +10,7 @@ const QuizLanding = () => {
 
   useEffect(() => {
     const getQuiz = async () => {
-      const res = await axios.get(
-        `https://lms-server-tktv.onrender.com/quiz/${id}`,
-      );
+      const res = await axios.get(`${backend}/quiz/${id}`);
       console.log(res.data);
       setQuiz(res.data);
     };
