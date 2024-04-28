@@ -11,7 +11,7 @@ import axios from "axios";
 import ShareIcon from "@mui/icons-material/Share";
 import { useSelector } from "react-redux";
 import Select from "react-select";
-import { backend } from "../../url";
+import { backend, frontend } from "../../url";
 
 const QuizCard = ({ quizId, handleQuizResults }) => {
   const { user } = useSelector((state) => state.auth);
@@ -108,9 +108,7 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
             size='large'
             className='text-xs text-blue-600 hover:text-blue-800'
             onClick={() => {
-              navigator.clipboard.writeText(
-                `http://localhost:3000/quiz/${quizId}`,
-              );
+              navigator.clipboard.writeText(`${frontend}/quiz/${quizId}`);
             }}
           >
             <ShareIcon />

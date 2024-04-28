@@ -37,17 +37,17 @@ const Menu = ({
           className='item w-full'
         >
           <div className={menuItemClass("quizes")}>
-            <FaQuestionCircle color='white' />
-            <div className='listItemTitle text-white'>Quizes</div>
+            <FaQuestionCircle color='white' className='text-xl' />
+            <div className='listItemTitle text-white text-xl'>Quizes</div>
           </div>
         </div>
         <div
           onClick={() => handleMenuClick("courses", openCourses)}
-          className='item w-full'
+          className='item w-full text-xl'
         >
           <div className={menuItemClass("courses")}>
-            <FaBookOpen color='white' />
-            <div className='listItemTitle text-white'>Courses</div>
+            <FaBookOpen color='white' className='text-xl' />
+            <div className='listItemTitle text-white text-xl'>Courses</div>
           </div>
         </div>
         {showUsers && (
@@ -59,15 +59,15 @@ const Menu = ({
                 setAnchorEl(e.currentTarget);
               }}
             >
-              <MdViewList color='white' />
-              <div className='listItemTitle text-white'>Users</div>
+              <MdViewList color='white' className='text-xl' />
+              <div className='listItemTitle text-white text-xl'>Users</div>
             </div>
             <MuiMenu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={() => setAnchorEl(null)}
               MenuListProps={{
-                style: { width: anchorEl ? anchorEl.clientWidth : undefined }, 
+                style: { width: anchorEl ? anchorEl.clientWidth : undefined },
               }}
               anchorOrigin={{
                 vertical: "bottom",

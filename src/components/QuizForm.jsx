@@ -119,19 +119,37 @@ const QuizForm = () => {
       <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4'>
         <div className='w-full max-w-2xl p-5 bg-white shadow-md rounded-lg'>
           <h2 className='text-center text-2xl font-bold mb-4'>Create Quiz</h2>
-          <input
-            type='file'
-            accept='.xlsx, .xls'
-            onChange={handleFile}
-            className='file-input p-2 mb-4'
-          />
-          <a
-            href={`${process.env.PUBLIC_URL}/LMS Quiz Creation Template.xlsx`}
-            download
-            className='btn btn-primary mb-4 bg-purple-500 px-4 py-2 rounded text-white font-bold'
-          >
-            Download Quiz Template
-          </a>
+          <div className='mb-4 flex flex-row justify-between'>
+            <input
+              id='file-upload'
+              type='file'
+              accept='.xlsx, .xls'
+              onChange={handleFile}
+              className='hidden'
+            />
+            <label
+              htmlFor='file-upload'
+              className='cursor-pointer bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded inline-flex items-center'
+            >
+              <svg
+                className='w-4 h-4 mr-2'
+                fill='currentColor'
+                xmlns='http://www.w3.org/2000/svg'
+                viewBox='0 0 20 20'
+              >
+                <path d='M16.7,5.3L10.4,11.6l-3.3-3.3C7,8.2,6.9,8.1,6.7,8.1H6.6c-0.4,0-0.8,0.3-0.8,0.8c0,0.2,0.1,0.4,0.3,0.5l4.3,4.3   c0.2,0.2,0.4,0.3,0.6,0.3s0.4-0.1,0.6-0.3l7-7c0.2-0.2,0.3-0.4,0.3-0.6s-0.1-0.4-0.3-0.6C17.5,4.9,17.1,4.9,16.7,5.3z' />
+              </svg>
+              <span>Upload Excel File</span>
+            </label>
+            <a
+              href={`${process.env.PUBLIC_URL}/LMS Quiz Creation Template.xlsx`}
+              download
+              className='btn btn-primary mb-4 bg-purple-500 px-4 py-2 rounded text-white font-bold'
+            >
+              Download Quiz Template
+            </a>
+          </div>
+
           <div className='flex gap-4 mb-4'>
             <input
               type='text'

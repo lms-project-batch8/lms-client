@@ -1,163 +1,150 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "../Navbar/Navbar";
 import { backend } from "../../url";
 
 const EditUser = () => {
   const { id } = useParams();
+  const [user, setUser] = useState({
+    userId: id,
+    userName: "",
+    userEmail: "",
+    userPassword: "",
+    userRole: "",
+  });
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [userId, setUserId] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
-  async function fetchData() {
+  const fetchData = async () => {
     try {
-      const res = await axios.get(
-        `${backend}/users/${id}`,
-      );
-
-      const user = res.data[0];
-      console.log(res.data[0]);
-
-      setName(user.user_name);
-      setEmail(user.user_email);
-      setPassword(user.user_password);
-      setRole(user.user_role);
+      const response = await axios.get(`${backend}/users/${id}`);
+      const userData = response.data[0];
+      setUser({
+        userId: id,
+        userName: userData.user_name,
+        userEmail: userData.user_email,
+        userPassword: userData.user_password,
+        userRole: userData.user_role,
+      });
     } catch (error) {
       console.error("Error fetching user data:", error);
+      toast.error("Failed to fetch user data.");
     }
-  }
+  };
+
   useEffect(() => {
     fetchData();
-    return;
-  }, []);
+  }, [id]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const res = await axios.put(
-      `https://lms-server-tktv.onrender.com/users/${id}`,
-      {
-        user_id: userId,
-        user_name: name,
-        user_email: email,
-        user_password: password,
-        user_role: role,
-      },
-    );
+    try {
+      await axios.put(`${backend}/users/${id}`, user);
+      toast.success("User updated successfully!");
+    } catch (error) {
+      console.error("Error updating user:", error);
+      toast.error("Failed to update user.");
+    }
   };
 
   return (
     <>
       <Navbar />
-      <div className='w-[1024px] flex flex-col justify-center items-center gap-10 overflow-hidden h-full'>
-        <h2 className='text-4xl pt-10 text-center font-extrabold dark:text-grey-600'>
-          Edit User :<span className='text-red-600 pl-3'>{id}</span>
+      <div className='max-w-4xl mx-auto p-5'>
+        <h2 className='text-2xl font-semibold text-center text-gray-800 mb-6'>
+          Edit User: <span className='text-red-500'>{id}</span>
         </h2>
-        <div className='h-screen flex flex-row justify-center'>
-          <form className=' mx-auto w-[400px]' onSubmit={handleSubmit}>
-            <div className='relative z-0 w-full mb-5 group'>
-              <input
-                type='number'
-                name='userid'
-                id='userid'
-                value={id}
-                onChange={(e) => setUserId(e.target.value)}
-                className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
-                required
-              />
-              <label
-                htmlFor='userid'
-                className='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
-              >
-                User Id
-              </label>
-            </div>
-            <div className='relative z-0 w-full mb-5 group'>
-              <input
-                type='text'
-                name='username'
-                id='username'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
-                required
-              />
-              <label
-                htmlFor='username'
-                className='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
-              >
-                User Name
-              </label>
-            </div>
-            <div className='relative z-0 w-full mb-5 group'>
-              <input
-                type='email'
-                name='userEmail'
-                id='userEmail'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
-                required
-              />
-              <label
-                htmlFor='userEmail'
-                className='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
-              >
-                User Email
-              </label>
-            </div>
-            <div className='grid  md:gap-6'>
-              <div className='relative z-0 w-full mb-5 group'>
-                <input
-                  type='password'
-                  name='userPassword'
-                  id='userPassword'
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
-                  required
-                />
-                <label
-                  htmlFor='userPassword'
-                  className='peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
-                >
-                  User Password
-                </label>
-              </div>
-            </div>
-            <div className='grid md:gap-6'>
-              <div className='relative z-0 w-full mb-5 group'>
-                <input
-                  type='text'
-                  name='userRole'
-                  id='userRole'
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
-                  required
-                />
-                <label
-                  htmlFor='userRole'
-                  className='peer-focus:font-medium absolute text-sm text-gray-800 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
-                >
-                  User Role
-                </label>
-              </div>
-            </div>
-            <button
-              type='submit'
-              className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+        <form onSubmit={handleSubmit} className='space-y-6'>
+          <div className='flex flex-col'>
+            <label
+              htmlFor='userName'
+              className='mb-2 text-sm font-medium text-gray-700'
             >
-              Submit
-            </button>
-          </form>
-        </div>
+              User Name
+            </label>
+            <input
+              type='text'
+              name='userName'
+              id='userName'
+              value={user.userName}
+              onChange={handleChange}
+              required
+              className='px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+            />
+          </div>
+          <div className='flex flex-col'>
+            <label
+              htmlFor='userEmail'
+              className='mb-2 text-sm font-medium text-gray-700'
+            >
+              User Email
+            </label>
+            <input
+              type='email'
+              name='userEmail'
+              id='userEmail'
+              value={user.userEmail}
+              onChange={handleChange}
+              required
+              className='px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+            />
+          </div>
+          <div className='flex flex-col'>
+            <label
+              htmlFor='userPassword'
+              className='mb-2 text-sm font-medium text-gray-700'
+            >
+              User Password
+            </label>
+            <input
+              type='password'
+              name='userPassword'
+              id='userPassword'
+              value={user.userPassword}
+              onChange={handleChange}
+              required
+              className='px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+            />
+          </div>
+          <div className='flex flex-col'>
+            <label
+              htmlFor='userRole'
+              className='mb-2 text-sm font-medium text-gray-700'
+            >
+              User Role
+            </label>
+            <select
+              name='userRole'
+              id='userRole'
+              value={user.userRole}
+              onChange={handleChange}
+              required
+              className='px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+            >
+              <option value=''>Select a role</option>
+              <option value='admin'>Admin</option>
+              <option value='trainer'>Trainer</option>
+              <option value='trainee'>Trainee</option>
+            </select>
+          </div>
+          <button
+            type='submit'
+            className='w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300'
+          >
+            Submit
+          </button>
+        </form>
       </div>
+      <ToastContainer />
     </>
   );
 };

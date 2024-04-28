@@ -63,9 +63,7 @@ const LoginPage = (props) => {
 
     let res = {};
     try {
-      res = await axios.get(
-        `${backend}/search?email=${email}`,
-      );
+      res = await axios.get(`${backend}/search?email=${email}`);
       const user = res.data[0];
 
       if (user) {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { Button, Container, Typography, LinearProgress } from "@mui/material";
 import Question from "../../components/Question/Question";
 import Timer from "../Timer/Timer";
-import { Button, Container, Typography, Box } from "@mui/material";
 import QuizResultsDialog from "../../pages/QuizResultsDialog";
 import { useSelector } from "react-redux";
 import { backend } from "../../url";
@@ -15,7 +15,8 @@ const Quiz = () => {
   const [userAnswers, setUserAnswers] = useState({});
   const [marksObtained, setMarksObtained] = useState(0);
   const [marks, setMarks] = useState(0);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleAnswerChange = (questionId, selectedOptionId) => {
     setUserAnswers((prevAnswers) => ({
@@ -54,13 +55,43 @@ const Quiz = () => {
   };
 
   useEffect(() => {
-    const getQuiz = async () => {
-      const res = await axios.get(`${backend}/quiz/${id}`);
-      console.log("Quiz Data:", res.data);
-      setQuiz(res.data);
+    // Check session storage for existing state
+    const storedQuiz = sessionStorage.getItem("quiz");
+    const storedUserAnswers = sessionStorage.getItem("userAnswers");
+    const storedMarksObtained = sessionStorage.getItem("marksObtained");
+
+    if (storedQuiz) setQuiz(JSON.parse(storedQuiz));
+    if (storedUserAnswers) setUserAnswers(JSON.parse(storedUserAnswers));
+    if (storedMarksObtained) setMarksObtained(parseInt(storedMarksObtained));
+
+    // Prevent default unload and prompt the user to stay
+    const handleUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
     };
 
-    getQuiz();
+    window.addEventListener("beforeunload", handleUnload);
+    return () => window.removeEventListener("beforeunload", handleUnload);
+  }, []);
+
+  useEffect(() => {
+    // Save state to session storage on changes
+    sessionStorage.setItem("quiz", JSON.stringify(quiz));
+    sessionStorage.setItem("userAnswers", JSON.stringify(userAnswers));
+    sessionStorage.setItem("marksObtained", marksObtained.toString());
+  }, [quiz, userAnswers, marksObtained]);
+
+  useEffect(() => {
+    const getQuiz = async () => {
+      setLoading(true);
+      const res = await axios.get(`${backend}/quiz/${id}`);
+      setQuiz(res.data);
+      setLoading(false);
+    };
+
+    if (!quiz || Object.keys(quiz).length === 0) {
+      getQuiz();
+    }
   }, [id]);
 
   useEffect(() => {
@@ -88,44 +119,46 @@ const Quiz = () => {
 
   return (
     <Container sx={{ padding: "30px" }}>
+      {loading ? <LinearProgress /> : null}
       <Typography variant='h4' className='text-center my-6 text-purple-800'>
         {quiz.title || "Quiz"}
       </Typography>
 
-      <Timer
-        seconds={parseInt(quiz.duration_minutes || 0) * 60}
-        onTimeExpired={handleSubmit}
-      />
-
-      <div>
-        {quiz.questions?.map((question) => (
-          <Question
-            key={question.question_id}
-            question={question.question_text}
-            options={question.options}
-            questionId={question.question_id}
-            onOptionSelect={handleAnswerChange}
+      {!loading && (
+        <>
+          <Timer
+            seconds={parseInt(quiz.duration_minutes || 0) * 60}
+            onTimeExpired={handleSubmit}
           />
-        ))}
-      </div>
 
-      <Button
-        variant='contained'
-        color='primary'
-        className='mt-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
-        onClick={() => {
-          checkAnswersAndCalculateMarks(quiz, userAnswers);
-          handleClickOpen();
-        }}
-      >
-        Submit
-      </Button>
+          <div>
+            {quiz.questions?.map((question) => (
+              <Question
+                key={question.question_id}
+                question={question.question_text}
+                options={question.options}
+                questionId={question.question_id}
+                onOptionSelect={handleAnswerChange}
+              />
+            ))}
+          </div>
 
-      <QuizResultsDialog
-        open={open}
-        marks={marks}
-        marksObtained={marksObtained}
-      />
+          <Button
+            variant='contained'
+            color='primary'
+            className='mt-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
+            onClick={handleSubmit}
+          >
+            Submit
+          </Button>
+
+          <QuizResultsDialog
+            open={open}
+            marks={marks}
+            marksObtained={marksObtained}
+          />
+        </>
+      )}
     </Container>
   );
 };
