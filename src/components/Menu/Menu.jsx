@@ -105,7 +105,7 @@ const Menu = ({
           >
             <div className={menuItemClass("trainees")}>
               <MdViewList color='white' />
-              <div className='listItemTitle text-white'>Trainees</div>
+              <div className='listItemTitle text-white text-xl'>Trainees</div>
             </div>
           </div>
         )}
