@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -7,11 +7,15 @@ import { read, utils } from "xlsx";
 import Navbar from "./Navbar/Navbar";
 import axios from "axios";
 import { backend } from "../url";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const QuizForm = () => {
   const [quizName, setQuizName] = useState("");
   const [quizDuration, setQuizDuration] = useState("");
   const [questions, setQuestions] = useState([]);
+
+  const navigate = useNavigate();
 
   const handleFile = (e) => {
     const file = e.target.files[0];
@@ -111,10 +115,27 @@ const QuizForm = () => {
       quizDuration,
       questions,
     });
+
+    toast.success("Quiz added Successfully");
+
+    setTimeout(() => {
+      navigate("/");
+    }, 1500);
   };
 
   return (
     <>
+      <ToastContainer
+        position='top-right'
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Navbar />
       <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4'>
         <div className='w-full max-w-2xl p-5 bg-white shadow-md rounded-lg'>
@@ -230,9 +251,9 @@ const QuizForm = () => {
               <AddCircleOutlineIcon />
               <span className='text-sm p-1'>Add Question</span>
             </IconButton>
-            <IconButton onClick={submitQuiz} color='success'>
-              <SendIcon />
-            </IconButton>
+            <Button variant='contained' onClick={submitQuiz} color='success'>
+              Submit Quiz
+            </Button>
           </div>
         </div>
       </div>

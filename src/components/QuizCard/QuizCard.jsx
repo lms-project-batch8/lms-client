@@ -12,22 +12,17 @@ import ShareIcon from "@mui/icons-material/Share";
 import { useSelector } from "react-redux";
 import Select from "react-select";
 import { backend, frontend } from "../../url";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const QuizCard = ({ quizId, handleQuizResults }) => {
+const QuizCard = ({ quizId, handleQuizResults, handleDeleteQuiz, quiz }) => {
   const { user } = useSelector((state) => state.auth);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [optionList, setOptionList] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState();
 
   const isTrainer = user.user_role === "trainer";
-  const [quiz, setQuiz] = useState({});
 
   useEffect(() => {
-    const getQuiz = async () => {
-      const res = await axios.get(`${backend}/quiz/${quizId}`);
-      setQuiz(res.data);
-    };
-
     const getTrainees = async () => {
       const res = await axios.get(`${backend}/users?user_role=trainee`);
       const newOptionList = res.data.map((user) => ({
@@ -38,7 +33,6 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
     };
 
     getTrainees();
-    getQuiz();
   }, []);
 
   const openTrainerDropdown = () => {
@@ -70,7 +64,7 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
   return (
     <div className='relative flex justify-center items-center bg-gray-100 m-4 shadow-lg rounded-lg'>
       <Card className='w-full max-w-sm rounded-lg overflow-hidden'>
-        <Link to={`/quiz/${quizId}`} state={{ quizId }} className='block'>
+        <Link to={`/quiz/${quizId}`} className='block'>
           <CardMedia
             component='img'
             alt='quiz image'
@@ -83,6 +77,17 @@ const QuizCard = ({ quizId, handleQuizResults }) => {
             </Typography>
           </CardContent>
         </Link>
+        {isTrainer && (
+          <div className='flex absolute gap-2 top-0 right-0 m-2'>
+            <Button
+              variant='contained'
+              onClick={() => handleDeleteQuiz(quizId)}
+              className='w-10 h-10 p-0'
+            >
+              <DeleteIcon />
+            </Button>
+          </div>
+        )}
         <CardActions className='flex flex-row justify-end p-2 bg-white'>
           {isTrainer && (
             <Button

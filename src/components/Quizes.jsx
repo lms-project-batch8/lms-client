@@ -6,6 +6,7 @@ import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import Loader from "./Loader";
 import { backend } from "../url";
+import { ToastContainer, toast } from "react-toastify";
 
 const Quizes = ({ handleQuizResults }) => {
   const [quizzes, setQuizzes] = useState([]);
@@ -47,8 +48,33 @@ const Quizes = ({ handleQuizResults }) => {
     getQuizzes();
   }, []);
 
+  const handleDeleteQuiz = async (deletedQuizId) => {
+    try {
+      await axios.delete(`${backend}/quiz/${deletedQuizId}`);
+      setQuizzes((prevQuizzes) =>
+        prevQuizzes.filter((quiz) => quiz.quiz_id !== deletedQuizId),
+      );
+      console.log("Quiz deleted successfully!");
+      toast.success("Deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting quiz:", error);
+      toast.error("Failed to delete quiz. Please try again.");
+    }
+  };
+
   return (
     <>
+      <ToastContainer
+        position='top-right'
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       {isLoading ? (
         <Loader open={isLoading} />
       ) : (
@@ -65,7 +91,9 @@ const Quizes = ({ handleQuizResults }) => {
             {quizzes.map((quiz) => (
               <QuizCard
                 quizId={quiz.quiz_id}
+                quiz={quiz}
                 handleQuizResults={handleQuizResults}
+                handleDeleteQuiz={handleDeleteQuiz}
               />
             ))}
           </div>

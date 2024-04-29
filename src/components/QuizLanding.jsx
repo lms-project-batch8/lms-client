@@ -18,8 +18,11 @@ const QuizLanding = () => {
         setQuiz(res.data);
       } catch (error) {
         console.error("Failed to fetch quiz:", error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
       }
-      setLoading(false); // End loading
     };
 
     getQuiz();
