@@ -4,7 +4,6 @@ import { Toaster, toast } from "react-hot-toast";
 const Timer = ({ seconds, onTimeExpired }) => {
   const [time, setTime] = useState(seconds);
 
-  // Load the timer state from local storage when the component mounts
   useEffect(() => {
     const savedTime = localStorage.getItem("quizTimer");
     const savedTimestamp = localStorage.getItem("quizTimerTimestamp");
@@ -25,7 +24,6 @@ const Timer = ({ seconds, onTimeExpired }) => {
     }
   }, [seconds, onTimeExpired]);
 
-  // Update local storage whenever the time changes
   useEffect(() => {
     if (time > 0) {
       localStorage.setItem("quizTimer", time.toString());
@@ -36,7 +34,7 @@ const Timer = ({ seconds, onTimeExpired }) => {
           const newTime = prevTime - 1;
 
           if (newTime === 300) {
-            toast("Less than 5 minutes remaining!", {
+            toast("Hurry Up! Less than 5 minutes remaining!", {
               icon: "⏰",
             });
           }
@@ -68,9 +66,9 @@ const Timer = ({ seconds, onTimeExpired }) => {
     <div>
       <p
         className={`font-bold text-xl ${
-          time > 5
-            ? "text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600"
-            : "text-red-500"
+          time <= 300
+            ? "text-red-500"
+            : "text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600"
         }`}
       >
         Time Left: {formattedTime}

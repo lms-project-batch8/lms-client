@@ -29,7 +29,7 @@ function PasswordChange({ otp, email }) {
       throw new Error("User ID not found");
     }
 
-    const updateResponse = await axios.put(
+    await axios.put(
       `${backend}/users/${userId}`,
       { user_password: confirmPassword },
     );
