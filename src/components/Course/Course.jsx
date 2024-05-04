@@ -35,13 +35,11 @@ function Course() {
         setLoading(true);
         const coursesResponse = await axios.get(courseUrl);
         setCourses(coursesResponse.data);
-        console.log(coursesResponse.data);
 
         if (user.user_role.toLowerCase() === "trainer") {
           const traineesResponse = await axios.get(
             `${backend}/users?user_role=trainee`,
           );
-          console.log(traineesResponse.data);
           const newOptionList = traineesResponse.data.map((user) => ({
             value: user.user_id.toString(),
             label: user.user_name,
@@ -61,7 +59,6 @@ function Course() {
   }, [user.user_id]);
 
   const openTrainerDropdown = (courseID) => {
-    console.log(courseID);
     setCourseId(courseID);
     setIsFormOpen(true);
   };
@@ -79,8 +76,6 @@ function Course() {
   };
 
   const submitForm = () => {
-    console.log(selectedOptions);
-    console.log({ trainee_id: user.user_id, data: selectedOptions });
     handleAssign();
     setSelectedOptions();
     closeFormOverlay();

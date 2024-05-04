@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -8,8 +8,9 @@ import Loader from "../../components/Loader";
 import ForgotPassword from "../../components/ForgotPassword"; // Adjust the path as necessary
 import Logo from "../../assets/PursuitLogin.png";
 import { backend } from "../../url";
+import bg from "../../assets/bg.jpg";
 
-const LoginPage = (props) => {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -110,87 +111,92 @@ const LoginPage = (props) => {
   };
 
   return (
-    <div className='mainContainer'>
+    <div
+      className='min-h-screen flex justify-center items-center'
+      style={{
+        backgroundImage: `url(${bg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       {openLoader && <Loader open={openLoader} />}
-      {!showForgotPassword ? (
-        <>
-          <div className='titleContainer'>
-            <img src={Logo} className='h-40' />
-            <div>Login</div>
-          </div>
-          <br />
-          <div className='inputContainer'>
-            <input
-              value={email}
-              placeholder='Enter your email here'
-              onChange={(ev) => setEmail(ev.target.value)}
-              className={"inputBox"}
-            />
-            <label className='errorLabel'>{emailError}</label>
-          </div>
-          <br />
-          <div className='inputContainer'>
-            <input
-              id='hs-toggle-password-with-checkbox'
-              type={showPassword ? "text" : "password"}
-              value={password}
-              placeholder='Enter your password here'
-              onChange={(ev) => setPassword(ev.target.value)}
-              className='inputBox '
-            />
-            <label className='errorLabel'>{passwordError}</label>
-            <div class='flex mt-4'>
-              <input
-                data-hs-toggle-password='{
-        "target": "#hs-toggle-password-with-checkbox"
-      }'
-                id='hs-toggle-password-checkbox'
-                type='checkbox'
-                checked={showPassword}
-                onChange={() => setShowPassword(!showPassword)}
-                class='shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800'
-              />
-              <label
-                for='hs-toggle-password-checkbox'
-                class='text-sm text-gray-500 ms-3 dark:text-gray-400'
+      <div className='w-full max-w-4xl flex rounded-lg overflow-hidden'>
+        <div
+          className='w-1/2 flex justify-center items-center'
+          style={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }} // Reduced opacity to make the background more visible
+        >
+          <img src={Logo} alt='Logo' className='h-48 w-auto' />
+        </div>
+        <div
+          className='w-1/2 shadow-md rounded px-8 pt-10 pb-10 flex flex-col justify-center'
+          style={{
+            minHeight: "500px",
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+          }}
+        >
+          {showForgotPassword ? (
+            <>
+              <ForgotPassword />
+              <button
+                className='mt-4 text-blue-500 hover:text-blue-700'
+                onClick={() => setShowForgotPassword(false)}
               >
-                Show password
-              </label>
-            </div>
-          </div>
-          <br />
-          <div className='inputContainer'>
-            <input
-              className='inputButton'
-              type='button'
-              onClick={onButtonClick}
-              value={"Log in"}
-            />
-          </div>
-          <br />
-          <div className='inputContainer text-center'>
-            <button
-              className='text-blue-500 hover:text-blue-700'
-              onClick={() => setShowForgotPassword(true)}
-            >
-              Forgot Password?
-            </button>
-          </div>
-        </>
-      ) : (
-        <>
-          <ForgotPassword />
-          <br />
-          <div className='inputContainer text-center'>
-            <button
-              className='text-blue-500 hover:text-blue-700'
-              onClick={() => setShowForgotPassword(false)}
-            >
-              Back to Login
-            </button>
-          </div>
-        </>
-      )}
+                Back to Login
+              </button>
+            </>
+          ) : (
+            <>
+              <div className='mb-6'>
+                <h1 className='text-center font-semibold text-xl'>Login</h1>
+              </div>
+              <div>
+                <input
+                  className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                  type='text'
+                  placeholder='Email'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <p className='text-red-500 text-xs italic'>{emailError}</p>
+              </div>
+              <div className='mt-6'>
+                <input
+                  className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline'
+                  type={showPassword ? "text" : "password"}
+                  placeholder='Password'
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <p className='text-red-500 text-xs italic'>{passwordError}</p>
+                <label className='block text-gray-500 text-sm'>
+                  <input
+                    className='mr-2 leading-tight'
+                    type='checkbox'
+                    checked={showPassword}
+                    onChange={() => setShowPassword(!showPassword)}
+                  />
+                  Show Password
+                </label>
+              </div>
+              <div className='flex items-center justify-between mt-8'>
+                <button
+                  className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+                  type='button'
+                  onClick={handleLogin}
+                >
+                  Sign In
+                </button>
+                <a
+                  className='inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800 cursor-pointer'
+                  onClick={() => setShowForgotPassword(true)}
+                >
+                  Forgot Password?
+                </a>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

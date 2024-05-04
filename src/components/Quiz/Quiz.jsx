@@ -48,14 +48,11 @@ const Quiz = () => {
       }
     });
 
-    console.log("Total Marks:", totalMarks);
-    console.log("Total Possible Marks:", totalPossibleMarks);
     setMarksObtained(totalMarks);
     setMarks(totalPossibleMarks);
   };
 
   useEffect(() => {
-    // Check session storage for existing state
     const storedQuiz = sessionStorage.getItem("quiz");
     const storedUserAnswers = sessionStorage.getItem("userAnswers");
     const storedMarksObtained = sessionStorage.getItem("marksObtained");
@@ -64,7 +61,6 @@ const Quiz = () => {
     if (storedUserAnswers) setUserAnswers(JSON.parse(storedUserAnswers));
     if (storedMarksObtained) setMarksObtained(parseInt(storedMarksObtained));
 
-    // Prevent default unload and prompt the user to stay
     const handleUnload = (event) => {
       event.preventDefault();
       event.returnValue = "";
@@ -75,7 +71,6 @@ const Quiz = () => {
   }, []);
 
   useEffect(() => {
-    // Save state to session storage on changes
     sessionStorage.setItem("quiz", JSON.stringify(quiz));
     sessionStorage.setItem("userAnswers", JSON.stringify(userAnswers));
     sessionStorage.setItem("marksObtained", marksObtained.toString());

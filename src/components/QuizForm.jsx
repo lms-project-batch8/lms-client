@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Button, IconButton } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { read, utils } from "xlsx";
 import Navbar from "./Navbar/Navbar";
 import axios from "axios";
 import { backend } from "../url";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 
 const QuizForm = () => {
@@ -109,18 +109,19 @@ const QuizForm = () => {
   };
 
   const submitQuiz = async () => {
-    console.log(JSON.stringify({ quizName, quizDuration, questions }));
-    await axios.post(`${backend}/quiz`, {
-      quizName,
-      quizDuration,
-      questions,
-    });
-
-    toast.success("Quiz added Successfully");
-
-    setTimeout(() => {
-      navigate("/");
-    }, 1500);
+    try {
+      await axios.post(`${backend}/quiz`, {
+        quizName,
+        quizDuration,
+        questions,
+      });
+      toast.success("Quiz Creation Successfull");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    } catch (error) {
+      toast.error("Quiz Creation Failed");
+    }
   };
 
   return (

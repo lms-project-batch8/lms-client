@@ -9,7 +9,6 @@ const Menu = ({
   openUsers,
   openAddUsers,
   showUsers,
-  showAddUsers,
   isTrainer,
   openTrainees,
 }) => {

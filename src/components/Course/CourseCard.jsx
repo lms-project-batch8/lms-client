@@ -20,8 +20,6 @@ function CourseCard({
   const getTutorName = async () => {
     try {
       const res = await axios.get(`${backend}/users/${tutorID}`);
-
-      console.log(res.data[0]);
       setTutor(res.data[0]);
     } catch (error) {
       console.error(error);

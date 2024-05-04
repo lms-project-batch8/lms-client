@@ -3,16 +3,15 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Navbar from "./Navbar/Navbar";
 import { backend } from "../url";
-import { CircularProgress } from "@mui/material"; // Import CircularProgress
-
+import { CircularProgress } from "@mui/material";
 const QuizLanding = () => {
   const [quiz, setQuiz] = useState({});
-  const [loading, setLoading] = useState(false); // State to handle loading
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
     const getQuiz = async () => {
-      setLoading(true); // Start loading
+      setLoading(true);
       try {
         const res = await axios.get(`${backend}/quiz/${id}`);
         setQuiz(res.data);

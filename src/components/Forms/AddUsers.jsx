@@ -20,9 +20,7 @@ const AddUsers = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    console.log(user);
-
+    
     try {
       await axios.post(`${backend}/users`, user);
 

@@ -36,7 +36,6 @@ const EditUser = () => {
         userRole: userData.user_role,
       });
     } catch (error) {
-      console.error("Error fetching user data:", error);
       toast.error("Failed to fetch user data.");
     }
   };
@@ -51,7 +50,6 @@ const EditUser = () => {
       await axios.put(`${backend}/users/${id}`, user);
       toast.success("User updated successfully!");
     } catch (error) {
-      console.error("Error updating user:", error);
       toast.error("Failed to update user.");
     }
   };

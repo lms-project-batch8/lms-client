@@ -26,9 +26,6 @@ const Timer = ({ seconds, onTimeExpired }) => {
 
   useEffect(() => {
     if (time > 0) {
-      localStorage.setItem("quizTimer", time.toString());
-      localStorage.setItem("quizTimerTimestamp", Date.now().toString());
-
       const intervalId = setInterval(() => {
         setTime((prevTime) => {
           const newTime = prevTime - 1;

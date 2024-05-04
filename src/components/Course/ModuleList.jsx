@@ -55,7 +55,6 @@ function ModuleList({ course }) {
       );
 
       setWatchedCount(res.data[0].number_of_videos_done);
-      console.log(watchedCount);
       setProgressPercent((watchedCount / course.video_count) * 100);
     } catch (error) {
       console.log(error);

@@ -11,7 +11,6 @@ function CourseDashBoard() {
   const [loading, setLoading] = useState(false);
 
   const [course, setCourse] = useState({});
-  const [error, setError] = useState(false);
 
   const getCourse = async () => {
     try {
@@ -19,17 +18,11 @@ function CourseDashBoard() {
 
       const res = await axios.get(`${backend}/courses/${id}`);
 
-      console.log(res.data);
-
       if (res.data && res.data.length > 0) {
         setCourse(res.data[0]);
-        setError(false);
-      } else {
-        throw new Error("No data found");
       }
     } catch (error) {
       console.log(error);
-      setError(true);
     } finally {
       setTimeout(() => setLoading(false), [1000]);
     }
@@ -38,19 +31,6 @@ function CourseDashBoard() {
   useEffect(() => {
     getCourse();
   }, [id]);
-
-  if (error) {
-    return (
-      <div>
-        <Navbar />
-        <div className='text-center mt-20'>
-          <h2 className='text-xl font-bold'>
-            Failed to load course data. Please try again later.
-          </h2>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <>
