@@ -26,6 +26,9 @@ const Timer = ({ seconds, onTimeExpired }) => {
 
   useEffect(() => {
     if (time > 0) {
+      localStorage.setItem("quizTimer", time);
+      localStorage.setItem("quizTimerTimestamp", Date.now());
+
       const intervalId = setInterval(() => {
         setTime((prevTime) => {
           const newTime = prevTime - 1;
@@ -36,18 +39,24 @@ const Timer = ({ seconds, onTimeExpired }) => {
             });
           }
 
-          if (newTime === 1) {
+          if (newTime <= 0) {
+            clearInterval(intervalId);
             onTimeExpired();
+            localStorage.removeItem("quizTimer");
+            localStorage.removeItem("quizTimerTimestamp");
           }
 
           return newTime;
         });
       }, 1000);
 
-      return () => clearInterval(intervalId);
-    } else {
-      localStorage.removeItem("quizTimer");
-      localStorage.removeItem("quizTimerTimestamp");
+      return () => {
+        clearInterval(intervalId);
+        if (time > 0) {
+          localStorage.setItem("quizTimer", time);
+          localStorage.setItem("quizTimerTimestamp", Date.now());
+        }
+      };
     }
   }, [time, onTimeExpired]);
 
