@@ -8,7 +8,6 @@ import EditUser from "./components/Forms/EditUser";
 import QuizCreationPage from "./pages/QuizCreationPage";
 import CourseDashBoard from "./components/Course/CourseDashBoard";
 import QuizEditPage from "./pages/QuizEditPage";
-import Error from "./components/Error";
 import CourseForm from "./components/Course/CourseForm";
 
 const App = () => {
@@ -23,7 +22,6 @@ const App = () => {
           <Route element={<RequireAuth><QuizEditPage /></RequireAuth>} path="/quiz/:id/edit"/>
           <Route element={<RequireAuth><CourseForm /></RequireAuth>} path="/course/new"/>
           <Route element={<RequireAuth><CourseDashBoard /></RequireAuth>} path="/courses/:id"/>
-          <Route element={<Error />} path="/error" />
           <Route element={<LoginPage />} path="/login" />
         </Routes>
       </BrowserRouter>
