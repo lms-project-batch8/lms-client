@@ -23,9 +23,7 @@ function TraineeDetails() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(
-        `${backend}/users?user_role=trainee`,
-      );
+      const res = await axios.get(`${backend}/users?user_role=trainee`);
       setTrainees(res.data);
     };
     fetchData();

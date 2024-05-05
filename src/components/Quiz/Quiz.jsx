@@ -108,8 +108,10 @@ const Quiz = () => {
   };
 
   const handleSubmit = () => {
-    checkAnswersAndCalculateMarks(quiz, userAnswers);
-    handleClickOpen();
+    if (user.user_role === "trainee") {
+      checkAnswersAndCalculateMarks(quiz, userAnswers);
+      handleClickOpen();
+    }
   };
 
   return (

@@ -4,10 +4,15 @@ import { Link, useParams } from "react-router-dom";
 import Navbar from "./Navbar/Navbar";
 import { backend } from "../url";
 import { CircularProgress } from "@mui/material";
+import { useSelector } from "react-redux";
 const QuizLanding = () => {
   const [quiz, setQuiz] = useState({});
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
+
+  const { user } = useSelector((state) => state.auth);
+
+  const [isAttempted, setIsAttempted] = useState(0);
 
   useEffect(() => {
     const getQuiz = async () => {
@@ -15,6 +20,12 @@ const QuizLanding = () => {
       try {
         const res = await axios.get(`${backend}/quiz/${id}`);
         setQuiz(res.data);
+
+        const attempt = await axios.get(
+          `${backend}/marks?user_id=${user.user_id}&quiz_id=${id}`,
+        );
+        console.log(attempt.data[0].record_exists);
+        setIsAttempted(attempt.data[0].record_exists);
       } catch (error) {
         console.error("Failed to fetch quiz:", error);
       } finally {
@@ -30,7 +41,7 @@ const QuizLanding = () => {
   if (loading) {
     return (
       <div className='flex justify-center items-center h-screen'>
-        <CircularProgress color='inherit' /> {/* Loading animation */}
+        <CircularProgress color='inherit' />
       </div>
     );
   }
@@ -55,11 +66,17 @@ const QuizLanding = () => {
           <p className='font-semibold mb-6'>
             Duration: {quiz.duration_minutes}
           </p>
-          <Link to={`/quiz/${id}/start`}>
-            <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
-              Start Quiz
-            </button>
-          </Link>
+          {isAttempted === 0 ? (
+            <Link to={`/quiz/${id}/start`}>
+              <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
+                Start Quiz
+              </button>
+            </Link>
+          ) : (
+            <span className='text-red-500'>
+              You have already attempted the quiz
+            </span>
+          )}
         </div>
       </div>
     </>
