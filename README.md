@@ -1,71 +1,61 @@
-# Getting Started with Create React App
+Pursuit LMS System
+Pursuit Learning Management System (LMS) is a web-based platform designed to simplify the management and delivery of educational content. It provides features for Trainers, Trainees, and Super Users, ensuring a seamless experience in course creation, content delivery, performance tracking, and user management.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Table of Contents
+Introduction
+User Roles
+System Features
+Trainer Features
+Trainee Features
+Super User Features
+Non-functional Requirements
+System Architecture
+Diagrams
+Conclusion
+Introduction
+The Pursuit LMS is a platform for educational institutions, businesses, and organizations to create, manage, and track learning modules. It is structured around three main user roles:
 
-## Available Scripts
+Trainer: Manages courses and trainees.
+Trainee: Engages with the provided learning material.
+Super User: Manages overall system operations, including trainers and trainees.
+User Roles
+Trainer
+Responsible for creating courses, modules, quizzes, and managing trainee progress.
+Trainee
+Accesses and completes assigned courses and quizzes.
+Super User
+Administrative privileges for user and course management.
+System Features
+Trainer Features
+Add Trainee: Assign trainees to specific courses.
+Create Courses: Develop courses composed of educational modules and quizzes.
+Create Modules: Add content (videos, documents) within courses.
+Create Quizzes: Develop and assign quizzes to trainees.
+Change Password: Use OTP verification to reset passwords.
+View Performance Reports: Review trainee progress and performance.
+Trainee Features
+Access Courses: View and engage with assigned courses.
+View Modules: Follow course modules sequentially.
+Complete Modules: Finish current modules to unlock the next ones.
+Take Quizzes: Participate in quizzes related to completed modules.
+View Performance: Track personal progress and results.
+Super User Features
+Add Users: Add trainers, trainees, and other super users.
+Manage Users: Edit and delete user accounts.
+Data Segregation: Maintain separate data for trainers, trainees, and super users.
+Non-functional Requirements
+Security: Ensure secure authentication and authorization.
+Scalability: Support an increasing number of users, courses, and content.
+Performance: Handle multiple concurrent users with minimal latency.
+Usability: Provide an intuitive and user-friendly interface.
+Reliability: Ensure system reliability with minimal downtime and robust error handling.
+System Architecture
+The LMS follows a client-server architecture, including:
 
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# lms-client
+Backend: Built with Node.js for server-side logic and MySQL for database management.
+Frontend: Developed using HTML, CSS, and JavaScript, with frameworks like React.js and Express.js to create dynamic user interfaces.
+Diagrams
+ER Diagram: [To be added]
+DFD Diagram: [To be added]
+Conclusion
+The Pursuit LMS provides a comprehensive platform for managing and delivering educational content effectively. With a focus on scalability, security, and reliability, it caters to the needs of trainers, trainees, and administrators, ensuring an efficient and seamless learning experience.
