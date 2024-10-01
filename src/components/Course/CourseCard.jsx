@@ -50,7 +50,7 @@ function CourseCard({
           </span>
         )}
       </div>
-      {user.user_role === "trainer" && (
+      {user.user_role === "trainer" && user.isActive === true && (
         <button
           className='py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200 mt-4 self-start mx-6 mb-4'
           onClick={(event) => {
